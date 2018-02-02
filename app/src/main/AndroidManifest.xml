@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.abdelmun3m.popularmovies">
+    package="com.abdelmun3m.movie_land">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -12,26 +12,32 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.abdelmun3m.popularmovies.MainActivity"
-            android:windowSoftInputMode="adjustPan"
+            android:name=".MainActivity"
+            android:windowSoftInputMode="adjustPan">
 
-            >
+        </activity>
+        <activity android:name=".MovieDetails"
+            android:theme="@style/AppTheme.NoActionBar"
+            />
+
+        <provider
+            android:name=".MoviesProvider.MoviesContentProvider"
+            android:authorities="com.abdelmun3m.movie_land"
+            android:exported="false" />
+
+        <service
+            android:name=".FavoriteMovieIntentTask.FavoriteMovieService"
+            android:exported="false" />
+
+        <activity
+            android:name=".ViewMain"
+            android:label="@string/title_activity_view_main"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.abdelmun3m.popularmovies.MovieDetails"/>
-
-        <provider
-            android:authorities="com.abdelmun3m.popularmovies"
-            android:name="com.abdelmun3m.popularmovies.MoviesProvider.MoviesContentProvider"
-            android:exported="false"
-            />
-        <service android:name=".FavoriteMovieIntentTask.FavoriteMovieService"
-            android:exported="false"
-            />
     </application>
 
 </manifest>

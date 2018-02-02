@@ -1,168 +1,147 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-    <ScrollView
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         xmlns:android="http://schemas.android.com/apk/res/android"
-
-        >
+        xmlns:tools="http://schemas.android.com/tools">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
+                  <!--header-->
             <LinearLayout
                 android:id="@+id/header"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:orientation="horizontal"
-                android:paddingBottom="5dp"
-                android:paddingEnd="10dp"
-                android:paddingStart="15dp"
-                android:paddingTop="15dp">
+                android:layout_height="500dp"
+                android:orientation="horizontal">
 
                 <FrameLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <com.android.volley.toolbox.NetworkImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/backdrops"
+                        android:scaleType="centerCrop"/>
 
-                    <ImageView
-                        android:id="@+id/im_md_Image"
-                        android:layout_width="140dp"
-                        android:layout_height="180dp"
-                        android:adjustViewBounds="true"
-                        android:contentDescription="@string/movie_image_poster"
-                        android:scaleType="centerCrop"
-                        android:src="@android:drawable/ic_menu_gallery" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="bottom">
+                        <FrameLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:visibility="gone"
+                            >
+
+                            <com.abdelmun3m.movie_land.utilities.DynamicHeightNetworkImageView
+                                android:id="@+id/im_md_Image"
+                                android:layout_width="140dp"
+                                android:layout_height="180dp"
+                                android:adjustViewBounds="true"
+                                android:contentDescription="@string/movie_image_poster"
+                                android:scaleType="centerCrop"
+                                android:src="@android:drawable/ic_menu_gallery" />
+
+                            <ProgressBar
+                                android:id="@+id/pb_md_image_load"
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
+                                android:layout_gravity="center" />
+                        </FrameLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/photo_background_protection"
+                            android:orientation="vertical">
+                            <TextView
+                                android:id="@+id/tv_md_Originaltitle"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_above="@+id/tv_md_ReleaseDate"
+                                android:layout_alignParentStart="true"
+                                android:layout_gravity="bottom"
+                                android:layout_marginStart="13dp"
+                                android:layout_marginBottom="4dp"
+                                android:textColor="@color/cardview_light_background"
+                                android:textSize="20sp"
+                                android:textStyle="bold"
+                                tools:text="Original Title" />
+
+                            <TextView
+                                android:id="@+id/tv_md_ReleaseDate"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentBottom="true"
+                                android:layout_alignStart="@+id/tv_md_Originaltitle"
+                                android:layout_marginBottom="22dp"
+                                android:layout_marginStart="11dp"
+                                android:gravity="end"
+                                android:text="@string/release_date"
+                                android:textColor="@color/cardview_light_background"
+                                android:textSize="18sp" />
+
+                            <TextView
+                                android:id="@+id/tv_md_vote_average"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignTop="@+id/tv_md_ReleaseDate"
+                                android:layout_marginEnd="75dp"
+                                android:layout_toStartOf="@+id/img_star_movie"
+                                android:text="7.8"
+                                android:textColor="@color/cardview_light_background"
+                                android:textSize="24sp" />
+
+                            <ImageView
+                                android:id="@+id/img_star_movie"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignTop="@+id/tv_md_ReleaseDate"
+                                android:layout_alignParentEnd="true"
+                                android:src="@android:drawable/btn_star_big_on" />
+
+                        </RelativeLayout>
+                    </LinearLayout>
 
                     <ProgressBar
-                        android:id="@+id/pb_md_image_load"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
-                        android:layout_gravity="center" />
+                        android:layout_width="42dp"
+                        android:layout_height="42dp"
+                        android:gravity="center"
+                        android:layout_gravity="center"
+                        android:id="@+id/loader"/>
                 </FrameLayout>
 
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    >
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@android:drawable/btn_star_big_on"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginTop="15dp"
-                        android:id="@+id/img_star_movie"
-                        />
-                    <TextView
-                        android:id="@+id/tv_md_Originaltitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="bottom"
-                        android:layout_marginBottom="15dp"
-                        android:layout_marginStart="10dp"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
             </LinearLayout>
 
+                  <!--Overview-->
             <LinearLayout
-                android:id="@+id/content"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:orientation="vertical">
-
-                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="15dp"
-                    android:orientation="horizontal">
+                    android:orientation="vertical"
+                    android:layout_margin="10dp">
 
                     <TextView
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="20dp"
-                        android:layout_weight="1"
-                        android:gravity="end"
-                        android:text="@string/release_date"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tv_md_ReleaseDate"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="start"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="18sp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="15dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="20dp"
-                        android:layout_weight="1"
-                        android:gravity="end"
-                        android:text="@string/vote_average"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tv_md_vote_average"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="start"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="18sp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="20dp"
-                        android:layout_weight="1"
-                        android:gravity="end"
                         android:text="@string/overview"
                         android:textColor="@color/colorPrimary"
-                        android:textSize="18sp"
+                        android:textSize="24sp"
                         android:textStyle="bold" />
 
                     <TextView
-                        android:layout_width="0dp"
+                        android:id="@+id/tv_md_overview"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1" />
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="24sp"
+                        tools:text="this is an overview"
+                        />
                 </LinearLayout>
 
-                <TextView
-                    android:id="@+id/tv_md_overview"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
-                    android:layout_marginTop="10dp"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="20sp" />
-            </LinearLayout>
 
+                    <!--Trailers-->
             <android.support.v7.widget.RecyclerView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -200,24 +179,5 @@
                     android:layout_gravity="center"
                     android:gravity="center" />
             </LinearLayout>
-            <LinearLayout
-                android:id="@+id/md_logo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@color/colorPrimary"
-                android:orientation="horizontal"
-                android:padding="5dp"
-                >
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:adjustViewBounds="true"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/movie_green"
-                    android:contentDescription="@string/movie_api_library_logo"
-                    />
-            </LinearLayout>
-
         </LinearLayout>
-    </ScrollView>
+    </android.support.v4.widget.NestedScrollView>

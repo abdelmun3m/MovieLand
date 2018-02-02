@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/top_rated"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="@string/drawer_item_top_rated" />
+        <item
+            android:id="@+id/popular_movies"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="@string/drawer_item_popular_movies" />
+        <item
+            android:id="@+id/recommended"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="@string/drawer_item_Recommended" />
+    </group>
+
+    <item android:title="Communicate">
+        <menu>
+            <item
+                android:id="@+id/about"
+                android:icon="@drawable/ic_menu_share"
+                android:title="@string/drawer_item_About" />
+            <item
+                android:id="@+id/settings"
+                android:icon="@drawable/ic_menu_send"
+                android:title="@string/drawer_item_Settings" />
+        </menu>
+    </item>
+
+</menu>

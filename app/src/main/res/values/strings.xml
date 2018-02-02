@@ -1,11 +1,16 @@
 <resources>
-    <string name="app_name">Popular Movies</string>
+    <string name="app_name">MovieLand</string>
 
+
+
+                <!--ERROR MESSAGES-->
     <string name="error_Message">Sorry an error accured while loading.
         Please! check your network connection then tray again later</string>
-
     <string name="network_error">No Network Connection Available ! Please Check your Connection</string>
     <string name="favorit_error">No Favorite movies</string>
+    <string name="json_error">Failed To Parse Jason Data</string>
+            <!--ERROR MESSAGES-->
+
 
     <string name="top_rated">Top Rated</string>
     <string name="popular">Popular</string>
@@ -18,5 +23,26 @@
     <string name="review_error">No Reviews</string>
     <string name="reviews">Reviews</string>
     <string name="favorite">Favorite</string>
+    <string name="title_activity_view_main">ViewMain</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_settings">Settings</string>
+
+    <!--TODO Add Arabic Version of menue Items -->
+    <string-array name="view_main_menue_items">
+        <item>@string/drawer_item_top_rated</item>
+        <item>@string/drawer_item_popular_movies</item>
+        <item>@string/drawer_item_Recommended</item>
+        <item>@string/drawer_item_About</item>
+        <item>@string/drawer_item_Settings</item>
+    </string-array>
+    <string name="drawer_item_popular_movies">Popular Movies</string>
+    <string name="drawer_item_top_rated">Top Rated</string>
+    <string name="drawer_item_Recommended">Recommended</string>
+    <string name="drawer_item_About">About</string>
+    <string name="drawer_item_Settings">Settings</string>
+
+
 
 </resources>
