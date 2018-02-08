@@ -6,10 +6,12 @@ import android.util.Log;
 public class GeneralData {
 
     public static final String API_KEY = "a26b061467611fb1fc2dabf560a402c6";
+    public static String YOUTUP_KEY = "AIzaSyBiQbI9ZId2_iyUjmhaHv-GQBQbTeWkw1Y";
     public static final String MOVIE_API_URL  = "https://api.themoviedb.org/3/";
     public static final String GENERAL_MOVIES_URL  = MOVIE_API_URL+"movie/";
     public static final String POPULAR_MOVIES_URL  = GENERAL_MOVIES_URL+"popular";
     public static final String TOP_RATED_MOVIES_URL   = GENERAL_MOVIES_URL+"top_rated";
+
     public static final String QUERY_API_KEY = "api_key";
     public static final String QUERY_LANGUAGE = "language";
     public static final String DEFAULT_LANG   = "en-US";
@@ -30,6 +32,10 @@ public class GeneralData {
     public static final String Json_MOVIE_POSTER_IMAGE  = "poster_path";
     public static final String Json_MOVIE_VOTE_AVERAGE  = "vote_average";
     public static final String Json_MOVIE_TRAILER_KEY  = "key";
+    public static final String Json_MOVIE_TRAILER_SITE  = "site";
+    public static final String Json_MOVIE_TRAILER_SITE_VALUE  = "YouTube";
+    public static final String Json_APPEND_REQUEST_KEY_OPTION = "append_to_response";
+
     public static final String Json_Posters = "posters";
     public static final String Json_backdrops = "backdrops";
     public static final String Json_Image_Ratio = "aspect_ratio";

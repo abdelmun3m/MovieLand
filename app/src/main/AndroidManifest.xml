@@ -12,13 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
-            android:windowSoftInputMode="adjustPan">
-
-        </activity>
-        <activity android:name=".MovieDetails"
-            android:theme="@style/AppTheme.NoActionBar"
-            />
+            android:name=".Views.ViewDetail"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <provider
             android:name=".MoviesProvider.MoviesContentProvider"
@@ -30,14 +25,20 @@
             android:exported="false" />
 
         <activity
-            android:name=".ViewMain"
+            android:name=".Views.ViewMain"
             android:label="@string/title_activity_view_main"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".Views.MovieDisplayActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_movie_display"
+            android:theme="@style/FullscreenTheme"></activity>
     </application>
 
 </manifest>

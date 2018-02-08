@@ -9,7 +9,7 @@ import android.os.Parcelable;
 
 public class MovieImages implements Parcelable{
     public String imagePosterUrl;
-    public float imagePosterRatio;
+    public float imagePosterRatio = 1.778f;
     public String imageBackdropsUrl;
     public float imageBackdropsRatio;
 

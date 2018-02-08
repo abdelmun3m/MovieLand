@@ -2,14 +2,14 @@
     <string name="app_name">MovieLand</string>
 
 
-
-                <!--ERROR MESSAGES-->
+    <!--ERROR MESSAGES-->
     <string name="error_Message">Sorry an error accured while loading.
         Please! check your network connection then tray again later</string>
     <string name="network_error">No Network Connection Available ! Please Check your Connection</string>
     <string name="favorit_error">No Favorite movies</string>
     <string name="json_error">Failed To Parse Jason Data</string>
-            <!--ERROR MESSAGES-->
+    <string name="error_player">There was an error initializing the YouTubePlayer (%1$s)</string>
+    <!--ERROR MESSAGES-->
 
 
     <string name="top_rated">Top Rated</string>
@@ -24,6 +24,7 @@
     <string name="reviews">Reviews</string>
     <string name="favorite">Favorite</string>
     <string name="title_activity_view_main">ViewMain</string>
+    <string name="movie_Video_Key">MovieKey</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -43,6 +44,9 @@
     <string name="drawer_item_About">About</string>
     <string name="drawer_item_Settings">Settings</string>
 
+    <string name="title_activity_movie_display">MovieDisplayActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 
 
 </resources>

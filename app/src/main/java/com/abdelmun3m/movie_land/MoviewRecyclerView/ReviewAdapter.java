@@ -12,6 +12,9 @@ import com.abdelmun3m.movie_land.Review;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Created by abdelmun3m on 12/10/17.
  */
@@ -19,13 +22,13 @@ import java.util.List;
 public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewViewHolder> {
 
 
-    List<Review> reviews= new ArrayList<>();
+    Review[] reviews= new Review[]{};
     reviewClick mReviewClick;
     public ReviewAdapter(reviewClick r){
         mReviewClick = r;
     }
 
-    public void updateReviews(List<Review> r){
+    public void updateReviews(Review[] r){
         this.reviews = r;
         notifyDataSetChanged();
     }
@@ -39,30 +42,42 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
     }
     @Override
     public void onBindViewHolder(ReviewViewHolder holder, int position) {
-        holder.bind(reviews.get(position));
+        holder.bind(reviews[position]);
     }
 
     @Override
     public int getItemCount() {
-        if(reviews !=null)  return reviews.size();
+        if(reviews !=null)  return reviews.length;
         return 0;
     }
 
     public class ReviewViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        TextView mTv_review;
+
+        @BindView(R.id.tv_review_author)
+            TextView reviewAuthor;
+        @BindView(R.id.tv_review_content)
+            TextView reviewContent;
+        @BindView(R.id.tv_review_Url)
+            TextView reviewUrl;
         public ReviewViewHolder(View itemView) {
             super(itemView);
-            mTv_review =(TextView) itemView.findViewById(R.id.tv_review);
-            itemView.setOnClickListener(this);
+            ButterKnife.bind(this,itemView);
+            reviewUrl.setOnClickListener(this);
         }
 
         public void bind(Review r){
-            mTv_review.setText(r.author);
+            reviewAuthor.setText(r.author);
+            reviewContent.setText(r.content);
+            if(r.content.length() > 200){
+                reviewUrl.setText("read More");
+            }else{
+                reviewUrl.setVisibility(View.GONE);
+            }
             itemView.setTag(r.url);
         }
         @Override
         public void onClick(View v) {
-            if(v.getId() == itemView.getId()) {mReviewClick.onReviewClick((String) itemView.getTag());}
+            if(v.getId() == reviewUrl.getId()) {mReviewClick.onReviewClick((String) itemView.getTag());}
         }
     }
 

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.abdelmun3m.movie_land.ViewMain">
+    tools:context="com.abdelmun3m.movie_land.Views.ViewMain">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"

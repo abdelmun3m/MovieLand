@@ -6,8 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.abdelmun3m.movie_land.GeneralData;
 import com.abdelmun3m.movie_land.R;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 
 /**
@@ -27,6 +29,7 @@ public class TrailerRecyclerView extends RecyclerView.Adapter<TrailerRecyclerVie
 
     public void updateTrailers(String[] newList) {
         listOfUrl = newList;
+
         notifyDataSetChanged();
     }
 
@@ -45,32 +48,36 @@ public class TrailerRecyclerView extends RecyclerView.Adapter<TrailerRecyclerVie
 
     @Override
     public int getItemCount() {
-        if (listOfUrl != null) return listOfUrl.length;
-        return 0;
+        if (listOfUrl == null) {
+            return 0;
+        }else if(listOfUrl.length > 4){
+            return 4;
+        }else{
+            return  listOfUrl.length;
+        }
     }
 
     public class TrailerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        TextView trailerId ;
 
+        @BindView(R.id.tv_trailer_ID)
+            TextView trailerId ;
         public TrailerViewHolder(View itemView) {
             super(itemView);
-            trailerId = (TextView) itemView.findViewById(R.id.tv_trailer_ID);
+            ButterKnife.bind(this,itemView);
             itemView.setOnClickListener(this);
         }
 
-        public void bind(int id , String url){
-            itemView.setTag(GeneralData.YOUTUBE_MOVIE+url);
-            trailerId.setText(itemView.getContext().getResources().getString(R.string.trailerID,String.valueOf((id+1))));
+        public void bind(int id , String movieKey){
+            itemView.setTag(movieKey);
         }
 
         @Override
         public void onClick(View v) {
-            if(v.getId() == itemView.getId()) myTrailerClicke.onTrailerClieck((String) itemView.getTag());
+            if(v.getId() == itemView.getId()) myTrailerClicke.onTrailerClick((String) itemView.getTag());
         }
     }
 
     public interface trailerClicke{
-
-        void onTrailerClieck(String url);
+        void onTrailerClick(String url);
     }
 }

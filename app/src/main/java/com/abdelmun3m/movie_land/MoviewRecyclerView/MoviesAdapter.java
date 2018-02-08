@@ -2,24 +2,24 @@ package com.abdelmun3m.movie_land.MoviewRecyclerView;
 
 import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.abdelmun3m.movie_land.ControllerMain;
 import com.abdelmun3m.movie_land.Movie;
 import com.abdelmun3m.movie_land.MoviesProvider.MoviesContract;
 import com.abdelmun3m.movie_land.R;
-import com.abdelmun3m.movie_land.ViewMain;
+import com.abdelmun3m.movie_land.Views.ViewMain;
 import com.abdelmun3m.movie_land.utilities.DynamicHeightNetworkImageView;
-import com.abdelmun3m.movie_land.utilities.NetworkSingleton;
 import com.android.volley.toolbox.NetworkImageView;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesViewHolder>{
 
@@ -73,10 +73,9 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
 
     @Override
     public int getItemCount() {
-
         return MovieList.size();
-        //return 10;
     }
+
 
 
 
@@ -87,26 +86,33 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
 
     public class MoviesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
+
         Movie currentMovie;
-        DynamicHeightNetworkImageView moviePoster ;
-        TextView originalTitle;
-        NetworkImageView img ;
+        @BindView(R.id.card_poster)
+            DynamicHeightNetworkImageView moviePoster ;
+        @BindView(R.id.card_title)
+            TextView originalTitle;
+        @BindView(R.id.loader)
+            ProgressBar loader;
 
         public MoviesViewHolder(View itemView) {
             super(itemView);
-            moviePoster = (DynamicHeightNetworkImageView) itemView.findViewById(R.id.card_poster);
-            img = (NetworkImageView) itemView.findViewById(R.id.card_poster);
-            originalTitle = (TextView) itemView.findViewById(R.id.card_title);
+            ButterKnife.bind(this,itemView);
             itemView.setOnClickListener(this);
         }
         public void bind(Movie m){
             this.currentMovie = m;
-            originalTitle.setText(m.OriginallTitle);
-            mView.loadPoster(m,moviePoster);
+            if(originalTitle == null || originalTitle.equals("")){
+                originalTitle.setText("NO Title");
+            }else{
+                originalTitle.setText(m.OriginallTitle);
+            }
+            mView.loadPoster(m,moviePoster,loader);
         }
         @Override
         public void onClick(View v) {
             if(v.getId() == itemView.getId()) movieClick.onMovieClick(this.currentMovie);
+
         }
     }
 

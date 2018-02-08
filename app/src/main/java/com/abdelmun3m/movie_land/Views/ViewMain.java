@@ -1,6 +1,8 @@
-package com.abdelmun3m.movie_land;
+package com.abdelmun3m.movie_land.Views;
 
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.os.PersistableBundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.GridLayoutManager;
@@ -15,11 +17,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.abdelmun3m.movie_land.Controlers.ControllerMain;
+import com.abdelmun3m.movie_land.Movie;
 import com.abdelmun3m.movie_land.MoviewRecyclerView.MoviesAdapter;
+import com.abdelmun3m.movie_land.R;
 import com.abdelmun3m.movie_land.utilities.DynamicHeightNetworkImageView;
+import com.abdelmun3m.movie_land.utilities.MovieAPI;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -32,7 +40,6 @@ public class ViewMain extends AppCompatActivity
 
 
     //--------------------------------------
-
     private static final int POPULAR_LIST_SELECTION = 2;
     private static final int TOP_RATED_LIST_SELECTION = 1;
     private static final int FAVORITE_MOVIES_SELECTION = 3;
@@ -44,7 +51,6 @@ public class ViewMain extends AppCompatActivity
     private static final int ERROR_NO_CONNECTION_ = 2;
     private static final int ERROR_LOADING_ERROR = 3;
     //----------------------------------------
-
     private ControllerMain controller;
     private MoviesAdapter mAdapter;
     @BindView(R.id.rv_moviesView2)
@@ -53,7 +59,11 @@ public class ViewMain extends AppCompatActivity
     TextView mErrorMessageField;
 
 
-
+    GridLayoutManager manager;
+    private Parcelable mListState;
+    private String LIST_STATE_KEY = "state";
+    private boolean dataloaded = false;
+    List<Movie> movieList ;
 
 
     @Override
@@ -83,11 +93,17 @@ public class ViewMain extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         //------------------------------------------------------------------------
-        setLayoutManager();
+
         controller = new ControllerMain(this);
-        controller.retrieveMovies(2);
+        if(savedInstanceState == null) {
+            setLayoutManager();
+            controller.retrieveMovies(currentCategory);
+        }
     }
 
+    public void setDataloaded(Boolean loaded){
+        this.dataloaded = loaded;
+    }
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -128,10 +144,14 @@ public class ViewMain extends AppCompatActivity
 
         if (id == R.id.top_rated) {
             // Handle the camera action
+            currentCategory = TOP_RATED_LIST_SELECTION;
+            controller.retrieveMovies(currentCategory);
         } else if (id == R.id.popular_movies) {
-
+            currentCategory = POPULAR_LIST_SELECTION;
+            controller.retrieveMovies(currentCategory);
         } else if (id == R.id.recommended) {
-
+            //MovieAPI.Build_Movie_Recommendation("19404");
+            controller.getMovieRecommendation("19404");
         } else if (id == R.id.about) {
 
         } else if (id == R.id.settings) {
@@ -157,6 +177,7 @@ public class ViewMain extends AppCompatActivity
             mAdapter = new MoviesAdapter(null);
         }
         mAdapter.UpdateListOfMovies(movies);
+        movieList = movies;
     }
 
     public void showErrorMsg(String msg){
@@ -168,7 +189,7 @@ public class ViewMain extends AppCompatActivity
     private void setLayoutManager(){
         int vertical = LinearLayoutManager.VERTICAL;
         int spanCount = 2;
-        GridLayoutManager manager =new GridLayoutManager(this, spanCount, vertical,false);
+        manager =new GridLayoutManager(this, spanCount, vertical,false);
         mRecyclerView.setLayoutManager(manager);
         mRecyclerView.setHasFixedSize(true);
         mAdapter = new MoviesAdapter(this);
@@ -181,7 +202,59 @@ public class ViewMain extends AppCompatActivity
         controller.movieClicked(m);
     }
 
-    public synchronized void loadPoster(Movie m, DynamicHeightNetworkImageView moviePoster) {
-        controller.setMovieImages(m,moviePoster);
+    public synchronized void loadPoster(Movie m, DynamicHeightNetworkImageView moviePoster, ProgressBar loader) {
+            //controller.setMovieImages(m,moviePoster,loader);
+        controller.loadImage(loader,m,moviePoster);
+    }
+
+    public void updateMovieInfo(ProgressBar loader, DynamicHeightNetworkImageView moviePoster, Movie m) {
+        //TODO if you don not changed loading full info to detail activity
+        //rememeber to move set dataloaded in loadMovieInfo inorder to not load movie
+        // info agin in restoring activity state
+          // controller.loadMovieInfo(loader,moviePoster,m);
+    }
+
+    public void movieUpdateListener(Movie m, long itemId) {
+        //mAdapter.updateMovieView(m,itemId);
+        //mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean("loaded",dataloaded);
+        if(dataloaded){
+            mListState = manager.onSaveInstanceState();
+            outState.putParcelableArrayList("list",
+                    (ArrayList<? extends Parcelable>) movieList);
+            outState.putParcelable(LIST_STATE_KEY, mListState);
+        }
+        /*mListState = manager.onSaveInstanceState();
+        outState.putParcelable(LIST_STATE_KEY,  mListState);*/
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (savedInstanceState != null) {
+            dataloaded = savedInstanceState.getBoolean("loaded");
+            if(dataloaded){
+                mListState = savedInstanceState.getParcelable(LIST_STATE_KEY);
+                movieList = savedInstanceState
+                        .getParcelableArrayList("list");
+                setLayoutManager();
+                mAdapter.UpdateListOfMovies(movieList);
+            }else {
+                showErrorMsg("error");
+            }
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mListState != null) {
+            manager.onRestoreInstanceState(mListState);
+        }
     }
 }
