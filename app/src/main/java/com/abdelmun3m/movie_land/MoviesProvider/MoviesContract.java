@@ -26,19 +26,18 @@ public class MoviesContract {
         public static final String COLUMN_MOVIE_ID ="movie_id";
         public static final String COLUMN_ORIGINAL_TITLE = "original_title";
         public static final String COLUMN_POSTER_IMAGE="image";
+        public static final String COLUMN_BACKDROP="backDrop";
         public static final String COLUMN_OVERVIEW="overview";
         public static final String COLUMN_RELEASE_DATE = "data";
         public static final String COLUMN_VOTE_RATE = "vote";
-
         public static final int  INDEX_COLUMN_MOVIE_DB_ID =0;
         public static final int  INDEX_COLUMN_MOVIE_ID =1;
-
         public static final int INDEX_COLUMN_ORIGINAL_TITLE = 2;
         public static final int INDEX_COLUMN_POSTER_IMAGE=3;
-        public static final int INDEX_COLUMN_OVERVIEW=4;
-        public static final int INDEX_COLUMN_RELEASE_DATE = 5;
-        public static final int INDEX_COLUMN_VOTE_RATE = 6;
-
+        public static final int INDEX_COLUMN_BACKDROP=4;
+        public static final int INDEX_COLUMN_OVERVIEW=5;
+        public static final int INDEX_COLUMN_RELEASE_DATE = 6;
+        public static final int INDEX_COLUMN_VOTE_RATE = 7;
 
 
         public static Uri BuildMovieUriWithId(String id){

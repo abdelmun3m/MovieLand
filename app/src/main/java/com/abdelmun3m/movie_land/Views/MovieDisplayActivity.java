@@ -64,13 +64,12 @@ public class MovieDisplayActivity extends YouTubeFailureRecoveryActivity impleme
     @Override
     protected void showDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("This app won't run without YouTube App," +
-                " which is missing from your device you can open video in Browser or Download Youtube ")
-                .setPositiveButton("Open In Browser", new DialogInterface.OnClickListener() {
+        builder.setMessage(getString(R.string.error_Youtube))
+                .setPositiveButton(getString(R.string.md_open_browser), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         openWebPage(videoKey);
                     }
-                }).setTitle("Youtube Failed ");
+                }).setTitle(getString(R.string.md_dialog_title));
         builder.show();
     }
 

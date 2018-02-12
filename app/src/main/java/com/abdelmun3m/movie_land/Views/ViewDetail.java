@@ -2,6 +2,7 @@ package com.abdelmun3m.movie_land.Views;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.abdelmun3m.movie_land.Controlers.ControllerDetail;
 import com.abdelmun3m.movie_land.GeneralData;
@@ -22,7 +24,10 @@ import com.abdelmun3m.movie_land.MoviewRecyclerView.ReviewAdapter;
 import com.abdelmun3m.movie_land.MoviewRecyclerView.TrailerRecyclerView;
 import com.abdelmun3m.movie_land.R;
 import com.abdelmun3m.movie_land.Review;
+import com.abdelmun3m.movie_land.utilities.ImageLoaderHelper;
 import com.abdelmun3m.movie_land.utilities.NetworkSingleton;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 
 import butterknife.BindView;
@@ -52,8 +57,8 @@ public class ViewDetail extends AppCompatActivity implements TrailerRecyclerView
             RecyclerView mReviewRecyclerView;
     @BindView(R.id.rv_trailers)
             RecyclerView mTreilerRecyclerView;
-    @BindView(R.id.backdrops)
-            NetworkImageView backdrop;
+    @BindView(R.id.poster)
+            NetworkImageView poster;
     @BindView(R.id.loader)
             ProgressBar loader;
     @BindView(R.id.detailAppBar)
@@ -63,7 +68,6 @@ public class ViewDetail extends AppCompatActivity implements TrailerRecyclerView
 
     private static final int REVIEW_MANAGER = 1;
     private static final int TRAILER_MANAGER = 1;
-    private static final String saveStateKey = "CurrentMovie";
 
     //TODO remember to update your coude to retrive the full movie info in this activity not in main
     // we don't need the all info about movie in the main view we don't need it for each movie
@@ -83,11 +87,13 @@ public class ViewDetail extends AppCompatActivity implements TrailerRecyclerView
             }
         }else{
             appBar.setExpanded(false);
-            CurrentMovie = savedInstanceState.getParcelable(saveStateKey);
+            CurrentMovie = savedInstanceState.getParcelable(getString(R.string.vd_currentMovie_key));
         }
 
         if(CurrentMovie != null){
             originaltitle.setText(CurrentMovie.OriginallTitle);
+
+            //ToDo ReDesign ReleaseDate And Vote Average ar remove strings
             releaseDate.setText("Release "+CurrentMovie.RelaseDate);
             voteAverage.setText("Rate "+String.valueOf(CurrentMovie.Vote_Average));
             overView.setText(CurrentMovie.Overview);
@@ -147,13 +153,18 @@ public class ViewDetail extends AppCompatActivity implements TrailerRecyclerView
     }
 
     private void loadPosterImage() {
-        /*NetworkSingleton.getInstance(this).getImageLoader().get(CurrentMovie.getPosterUrl(), new ImageLoader.ImageListener() {
+
+       // poster.setImageResource(R.drawable.movie_green);
+        /*ImageLoaderHelper.getInstance(this).getImageLoader().get(CurrentMovie.getPosterUrl(), new ImageLoader.ImageListener() {
             @Override
             public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
                 Bitmap img = response.getBitmap();
                 if(img != null){
+                    Toast.makeText(ViewDetail.this, ""+CurrentMovie.getPosterUrl(), Toast.LENGTH_SHORT).show();
                     loader.setVisibility(View.GONE);
-                    backdrop.setImageBitmap(img);
+                    poster.setVisibility(View.VISIBLE);
+                    poster.setImageBitmap(response.getBitmap());
+
                 }
             }
             @Override
@@ -162,7 +173,7 @@ public class ViewDetail extends AppCompatActivity implements TrailerRecyclerView
             }
         });*/
 
-             backdrop.setImageUrl(CurrentMovie.getPosterUrl(),NetworkSingleton.getInstance(this)
+             poster.setImageUrl(CurrentMovie.getPosterUrl(),NetworkSingleton.getInstance(this)
                .getImageLoader());
              loader.setVisibility(View.GONE);
     }
@@ -243,6 +254,6 @@ public class ViewDetail extends AppCompatActivity implements TrailerRecyclerView
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable(saveStateKey,CurrentMovie);
+        outState.putParcelable(getString(R.string.vd_currentMovie_key),CurrentMovie);
     }
 }

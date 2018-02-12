@@ -3,6 +3,7 @@ package com.abdelmun3m.movie_land.FavoriteMovieIntentTask;
 import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 
 import com.abdelmun3m.movie_land.GeneralData;
 import com.abdelmun3m.movie_land.Movie;
@@ -40,7 +41,8 @@ public class FavoriteMovieTasks {
         value.put(MoviesContract.FavoriteMoviesEntity.COLUMN_MOVIE_ID,movie.Movie_Id);
         value.put(MoviesContract.FavoriteMoviesEntity.COLUMN_ORIGINAL_TITLE,movie.OriginallTitle);
         value.put(MoviesContract.FavoriteMoviesEntity.COLUMN_OVERVIEW,movie.Overview);
-        //value.put(MoviesContract.FavoriteMoviesEntity.COLUMN_POSTER_IMAGE,movie.PosterImage);
+        value.put(MoviesContract.FavoriteMoviesEntity.COLUMN_POSTER_IMAGE,movie.images.imagePosterUrl);
+        value.put(MoviesContract.FavoriteMoviesEntity.COLUMN_BACKDROP,movie.images.imageBackdropsUrl);
         value.put(MoviesContract.FavoriteMoviesEntity.COLUMN_RELEASE_DATE,movie.RelaseDate);
         value.put(MoviesContract.FavoriteMoviesEntity.COLUMN_VOTE_RATE,movie.Vote_Average);
         return context.getContentResolver().insert(uri,value);

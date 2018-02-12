@@ -59,7 +59,7 @@ public class ControllerDetail {
 
             }
         });
-        NetworkSingleton.getInstance(context).addToRequestQueue(getTrailers,"TAG");
+        NetworkSingleton.getInstance(context).addToRequestQueue(getTrailers,TAG);
     }
 
 
@@ -82,7 +82,7 @@ public class ControllerDetail {
 
             }
         });
-        NetworkSingleton.getInstance(context).addToRequestQueue(getTrailers,"TAG");
+        NetworkSingleton.getInstance(context).addToRequestQueue(getTrailers,TAG);
     }
 
     public void IntentDeleteFavoriteMovie(String movieId) {

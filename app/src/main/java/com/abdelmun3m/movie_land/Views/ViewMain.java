@@ -1,13 +1,13 @@
 package com.abdelmun3m.movie_land.Views;
 
+import android.database.Cursor;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.os.PersistableBundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Display;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -25,7 +25,6 @@ import com.abdelmun3m.movie_land.Movie;
 import com.abdelmun3m.movie_land.MoviewRecyclerView.MoviesAdapter;
 import com.abdelmun3m.movie_land.R;
 import com.abdelmun3m.movie_land.utilities.DynamicHeightNetworkImageView;
-import com.abdelmun3m.movie_land.utilities.MovieAPI;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,14 +42,9 @@ public class ViewMain extends AppCompatActivity
     private static final int POPULAR_LIST_SELECTION = 2;
     private static final int TOP_RATED_LIST_SELECTION = 1;
     private static final int FAVORITE_MOVIES_SELECTION = 3;
-    private static final int ActivityLoaderID = 100;
     private int currentCategory = TOP_RATED_LIST_SELECTION;
-    private static final String SORT_STORE_KEY = "SortKey";
-    private static int SCREEN_SIZE = 1;
-    private static final  int ERROR_EMPTY_FAVORITE_MOVIES = 1;
-    private static final int ERROR_NO_CONNECTION_ = 2;
-    private static final int ERROR_LOADING_ERROR = 3;
     //----------------------------------------
+
     private ControllerMain controller;
     private MoviesAdapter mAdapter;
     @BindView(R.id.rv_moviesView2)
@@ -61,9 +55,9 @@ public class ViewMain extends AppCompatActivity
 
     GridLayoutManager manager;
     private Parcelable mListState;
-    private String LIST_STATE_KEY = "state";
     private boolean dataloaded = false;
     List<Movie> movieList ;
+    private boolean dualMode = true;
 
 
     @Override
@@ -74,26 +68,25 @@ public class ViewMain extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int width = size.x;
+        int height = size.y;
 
-        changeSelectedListItem(1);
+        if(width < 800){
+            dualMode = false;
+            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                    this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+            drawer.addDrawerListener(toggle);
+            toggle.syncState();
+        }
+
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         //------------------------------------------------------------------------
-
         controller = new ControllerMain(this);
         if(savedInstanceState == null) {
             setLayoutManager();
@@ -141,7 +134,6 @@ public class ViewMain extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
         if (id == R.id.top_rated) {
             // Handle the camera action
             currentCategory = TOP_RATED_LIST_SELECTION;
@@ -151,14 +143,20 @@ public class ViewMain extends AppCompatActivity
             controller.retrieveMovies(currentCategory);
         } else if (id == R.id.recommended) {
             //MovieAPI.Build_Movie_Recommendation("19404");
+            //TODO make recommendation logic after adding favorite Movies
             controller.getMovieRecommendation("19404");
-        } else if (id == R.id.about) {
+        }else if(id == R.id.favorite){
+            currentCategory = FAVORITE_MOVIES_SELECTION;
+            controller.retrieveFavoriteMovies(this);
+        }else if (id == R.id.about) {
 
         } else if (id == R.id.settings) {
 
         }
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        if(!dualMode){
+            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+            drawer.closeDrawer(GravityCompat.START);
+        }
         return true;
     }
 
@@ -178,6 +176,15 @@ public class ViewMain extends AppCompatActivity
         }
         mAdapter.UpdateListOfMovies(movies);
         movieList = movies;
+        showRecyclerView();
+    }
+
+    public  void updateAdapterData(Cursor data){
+
+        if(mAdapter == null){
+            mAdapter = new MoviesAdapter(null);
+        }
+        movieList = mAdapter.convertCursorToMovies(data);
     }
 
     public void showErrorMsg(String msg){
@@ -186,9 +193,14 @@ public class ViewMain extends AppCompatActivity
         mErrorMessageField.setText(msg);
     }
 
+    public void showRecyclerView(){
+
+        mRecyclerView.setVisibility(View.VISIBLE);
+        mErrorMessageField.setVisibility(View.GONE);
+    }
     private void setLayoutManager(){
         int vertical = LinearLayoutManager.VERTICAL;
-        int spanCount = 2;
+        int spanCount =  (dualMode) ? 1 : 2;
         manager =new GridLayoutManager(this, spanCount, vertical,false);
         mRecyclerView.setLayoutManager(manager);
         mRecyclerView.setHasFixedSize(true);
@@ -198,13 +210,17 @@ public class ViewMain extends AppCompatActivity
 
     @Override
     public void onMovieClick(Movie m) {
-
         controller.movieClicked(m);
     }
 
     public synchronized void loadPoster(Movie m, DynamicHeightNetworkImageView moviePoster, ProgressBar loader) {
             //controller.setMovieImages(m,moviePoster,loader);
-        controller.loadImage(loader,m,moviePoster);
+        if(!dualMode){
+            controller.loadImage(loader,m,moviePoster,dualMode);
+        }else{
+            controller.setMovieImages(m,moviePoster,loader,dualMode);
+        }
+
     }
 
     public void updateMovieInfo(ProgressBar loader, DynamicHeightNetworkImageView moviePoster, Movie m) {
@@ -222,12 +238,12 @@ public class ViewMain extends AppCompatActivity
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putBoolean("loaded",dataloaded);
+        outState.putBoolean(getString(R.string.vm_load_key),dataloaded);
         if(dataloaded){
             mListState = manager.onSaveInstanceState();
-            outState.putParcelableArrayList("list",
+            outState.putParcelableArrayList(getString(R.string.vm_list_key),
                     (ArrayList<? extends Parcelable>) movieList);
-            outState.putParcelable(LIST_STATE_KEY, mListState);
+            outState.putParcelable(getString(R.string.vm_list_state_key), mListState);
         }
         /*mListState = manager.onSaveInstanceState();
         outState.putParcelable(LIST_STATE_KEY,  mListState);*/
@@ -237,24 +253,26 @@ public class ViewMain extends AppCompatActivity
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         if (savedInstanceState != null) {
-            dataloaded = savedInstanceState.getBoolean("loaded");
+            dataloaded = savedInstanceState.getBoolean(getString(R.string.vm_load_key));
             if(dataloaded){
-                mListState = savedInstanceState.getParcelable(LIST_STATE_KEY);
+                mListState = savedInstanceState.getParcelable(getString(R.string.vm_list_state_key));
                 movieList = savedInstanceState
-                        .getParcelableArrayList("list");
+                        .getParcelableArrayList(getString(R.string.vm_list_key));
                 setLayoutManager();
                 mAdapter.UpdateListOfMovies(movieList);
             }else {
-                showErrorMsg("error");
+                showErrorMsg(getString(R.string.error_activity_state));
             }
         }
     }
-
     @Override
     protected void onResume() {
         super.onResume();
         if (mListState != null) {
             manager.onRestoreInstanceState(mListState);
+        }
+        if(currentCategory == FAVORITE_MOVIES_SELECTION){
+            controller.retrieveFavoriteMovies(this);
         }
     }
 }

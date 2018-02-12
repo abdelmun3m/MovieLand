@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 /**
  * Created by abdelmun3m on 05/10/17.
@@ -36,6 +37,7 @@ public class MoviesContentProvider extends ContentProvider{
 
     @Override
     public boolean onCreate() {
+        Log.d("A7A","DB Created 2");
         mhelper = new FavoriteMoviesDbHelper(getContext());
         return true;
     }
@@ -74,6 +76,7 @@ public class MoviesContentProvider extends ContentProvider{
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values)
     {
+
         SQLiteDatabase db = mhelper.getWritableDatabase();
         int matcher = mUriMatcher.match(uri);
         Uri insertURI = null;
@@ -84,7 +87,7 @@ public class MoviesContentProvider extends ContentProvider{
                     insertURI =
                             ContentUris.withAppendedId(MoviesContract.FavoriteMoviesEntity.FAVORITE_MOVIES_URI,insertID);
                 }else {
-                    throw new android.database.SQLException("Failed to insert Data Id : " + insertID);
+                    throw new android.database.SQLException("Failed to insert Data Id : ");
                 }
                 break;
             default: throw new android.database.SQLException("Unknown URI : "+ uri);
@@ -178,6 +181,5 @@ public class MoviesContentProvider extends ContentProvider{
             default:return super.bulkInsert(uri, values);
         }
     }
-
 
 }

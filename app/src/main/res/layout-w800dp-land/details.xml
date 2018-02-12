@@ -14,14 +14,12 @@
             android:id="@+id/detailCollaps"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:layout_scrollFlags="scroll"
             app:contentScrim="?attr/colorPrimary">
             <FrameLayout
                 android:id="@+id/photo_container"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/photo_background_protection"
-                >
+                android:layout_height="wrap_content">
                 <ProgressBar
                     android:layout_width="42dp"
                     android:layout_height="42dp"
@@ -31,24 +29,29 @@
                 <com.android.volley.toolbox.NetworkImageView
                     android:id="@+id/poster"
                     android:layout_width="match_parent"
-                    android:layout_height="600dp"
+                    android:layout_height="400dp"
                     android:scaleType="fitXY"
-                    app:layout_collapseMode="parallax" />
+                    app:layout_collapseMode="parallax"
+                    android:src="@drawable/youtube"
+                    />
             </FrameLayout>
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/details_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?actionBarSize"
-                android:layout_gravity="bottom|left"
+                android:layout_gravity="bottom|start"
                 app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
                 app:layout_collapseMode="pin"
-                app:elevation="16dp">
+                app:elevation="16dp"
+                android:gravity="center"
+                >
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="horizontal"
-                    android:gravity="center_vertical">
+                    android:gravity="center_vertical"
+                    >
                     <TextView
                         android:id="@+id/tv_md_Originaltitle"
                         android:layout_width="0dp"
@@ -77,10 +80,11 @@
 
 
     <android.support.v4.widget.NestedScrollView
-        android:layout_width="match_parent"
+        android:layout_width="700dp"
         android:layout_height="wrap_content"
         android:scrollbarStyle="outsideOverlay"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_gravity="center">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -26,6 +26,7 @@ public class Movie implements Parcelable {
 
     public Movie() {
         images = new MovieImages();
+
     }
 
     public String getPosterUrl(){
@@ -50,7 +51,8 @@ public class Movie implements Parcelable {
         //in.readStringArray(trailersKeys);
         trailersKeys = in.createStringArray();
        // in.readStringArray(trailersKeys);
-        reviews = (Review[]) in.readParcelableArray(Review.class.getClassLoader());
+        //reviews = (Review[]) in.readParcelableArray(Review.class.getClassLoader());
+        reviews = in.createTypedArray(Review.CREATOR);
     }
 
     public static final Creator<Movie> CREATOR = new Creator<Movie>() {
@@ -82,6 +84,7 @@ public class Movie implements Parcelable {
         dest.writeInt(favorite);
         dest.writeParcelable(images,1);
         dest.writeStringArray(trailersKeys);
-        dest.writeParcelableArray(reviews,1);
+       // dest.writeParcelableArray(reviews,1);
+        dest.writeTypedArray(reviews,1);
     }
 }

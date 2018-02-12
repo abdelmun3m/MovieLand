@@ -16,6 +16,10 @@
             android:id="@+id/recommended"
             android:icon="@drawable/ic_menu_slideshow"
             android:title="@string/drawer_item_Recommended" />
+        <item
+            android:id="@+id/favorite"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="@string/drawer_item_favorite" />
     </group>
 
     <item android:title="Communicate">

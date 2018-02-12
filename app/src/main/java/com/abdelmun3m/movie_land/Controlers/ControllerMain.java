@@ -2,6 +2,7 @@ package com.abdelmun3m.movie_land.Controlers;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.View;
@@ -9,6 +10,8 @@ import android.widget.ProgressBar;
 
 import com.abdelmun3m.movie_land.GeneralData;
 import com.abdelmun3m.movie_land.Movie;
+import com.abdelmun3m.movie_land.MoviesProvider.MoviesContract;
+import com.abdelmun3m.movie_land.MoviewRecyclerView.MoviesAdapter;
 import com.abdelmun3m.movie_land.Views.ViewDetail;
 import com.abdelmun3m.movie_land.R;
 import com.abdelmun3m.movie_land.Views.ViewMain;
@@ -34,7 +37,7 @@ import java.util.List;
 
 public class ControllerMain {
 
-    public static final String TAG = "Main";
+    public static final String TAG = ControllerMain.class.getSimpleName();
     private ViewMain mView;
     private Context context;
     public ControllerMain(){
@@ -71,7 +74,7 @@ public class ControllerMain {
         NetworkSingleton.getInstance(context).addToRequestQueue(getMovies,TAG);
     }
 
-    public void setMovieImages(final Movie movie, final DynamicHeightNetworkImageView moviePoster, final ProgressBar loader){
+    public void setMovieImages(final Movie movie, final DynamicHeightNetworkImageView moviePoster, final ProgressBar loader, final boolean dualMode){
         String imagesUrl = MovieAPI.Build_Movies_Images_Url(movie.Movie_Id).toString();
         StringRequest getImages = new StringRequest(Request.Method.GET, imagesUrl,
                 new Response.Listener<String>() {
@@ -79,13 +82,14 @@ public class ControllerMain {
                     public void onResponse(String response) {
                         try {
                                 movie.images = MovieAPI.getMovieImages(response);
-
-//                                loadImage(loader,movie.getPosterUrl(),moviePoster);
+                                loadImage(loader,movie,moviePoster,dualMode);
+/*
                                 moviePoster.setImageUrl(movie.getPosterUrl(),
                                         NetworkSingleton.getInstance(moviePoster.getContext())
                                                 .getImageLoader());
                                 moviePoster.setAspectRatio(movie.images.imagePosterRatio);
                                 loader.setVisibility(View.GONE);
+*/
 
                         } catch (JSONException e) {
                             //TODO Loading Indicator
@@ -106,31 +110,15 @@ public class ControllerMain {
         NetworkSingleton.getInstance(context).addToRequestQueue(getImages,TAG);
     }
 
-    public  void loadImage(final ProgressBar pb , final Movie movie, final DynamicHeightNetworkImageView moviePoster){
+    public  void loadImage(final ProgressBar pb , final Movie movie, final DynamicHeightNetworkImageView moviePoster, final boolean dualMode){
 
-
-        /*NetworkSingleton.getInstance(context).getImageLoader().get(movie.getPosterUrl(), new ImageLoader.ImageListener() {
-            @Override
-            public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
-                Bitmap img = response.getBitmap();
-                if(img != null){
-
-                    moviePoster.setImageBitmap(img);
-                    moviePoster.setAspectRatio(movie.images.imagePosterRatio);
-                }
-            }
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        });*/
-        moviePoster.setImageUrl(movie.getPosterUrl(),
+        String url = dualMode? movie.getBackdropsUrl():movie.getPosterUrl();
+        moviePoster.setImageUrl(url,
                 NetworkSingleton.getInstance(moviePoster.getContext())
                         .getImageLoader());
-      //  moviePoster.setAspectRatio(.668f);
-        pb.setVisibility(View.GONE);
-
+        if(dualMode){
+            moviePoster.setAspectRatio(movie.images.imageBackdropsRatio);
+        }
     }
 
 
@@ -139,12 +127,6 @@ public class ControllerMain {
         if(m != null){
             Intent in = new Intent(context,ViewDetail.class);
             in.putExtra(GeneralData.INTENT_TAG,m);
-            if(m.images != null){
-                Log.d("A7A"," brfore Not Null");
-            }else{
-
-                Log.d("A7A","before Null");
-            }
             context.startActivity(in);
         }
     }
@@ -172,4 +154,15 @@ public class ControllerMain {
     }
 
 
+
+    public void retrieveFavoriteMovies(Context context){
+        Cursor query = context.getContentResolver()
+                .query(MoviesContract.FavoriteMoviesEntity.FAVORITE_MOVIES_URI,null,null,null,null,null);
+        if(query.getCount() > 0){
+            mView.updateAdapterData(query);
+        }else {
+           mView.showErrorMsg(context.getString(R.string.favorit_error));
+        }
+
+    }
 }

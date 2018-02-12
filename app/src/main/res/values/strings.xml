@@ -3,13 +3,39 @@
 
 
     <!--ERROR MESSAGES-->
-    <string name="error_Message">Sorry an error accured while loading.
+    <string name="error_Message">Sorry an error happened  while loading.
         Please! check your network connection then tray again later</string>
     <string name="network_error">No Network Connection Available ! Please Check your Connection</string>
     <string name="favorit_error">No Favorite movies</string>
     <string name="json_error">Failed To Parse Jason Data</string>
     <string name="error_player">There was an error initializing the YouTubePlayer (%1$s)</string>
+
+    <string name="error_Youtube"> This app won\'t run without YouTube App which is missing from your device you can open video in Browser or Download Youtube
+    </string>
+    <string name="error_activity_state">Sorry An Error happened
+        while retrieving activity state try to reload you application</string>
     <!--ERROR MESSAGES-->
+
+
+
+         <!--ViewMain Strings-->
+    <string name = "vm_load_key">load</string>
+    <string name = "vm_list_key">list</string>
+    <string name="vm_list_state_key">state</string>
+           <!--End Of ViewMain STrings-->
+
+
+
+    <!--ViewDetials Strings-->
+    <string name = "vd_currentMovie_key">CurrentMovie</string>
+    <!--End Of ViewDetails STrings-->
+
+
+    <!--MovieDisplayActivity Strings-->
+    <string name = "md_open_browser">Open In Browser</string>
+    <string name = "md_dialog_title">Youtube Failed</string>
+    <!--End Of MovieDisplayActivity STrings-->
+
 
 
     <string name="top_rated">Top Rated</string>
@@ -41,12 +67,15 @@
     <string name="drawer_item_popular_movies">Popular Movies</string>
     <string name="drawer_item_top_rated">Top Rated</string>
     <string name="drawer_item_Recommended">Recommended</string>
+    <string name="drawer_item_favorite">My Favorite</string>
     <string name="drawer_item_About">About</string>
     <string name="drawer_item_Settings">Settings</string>
 
     <string name="title_activity_movie_display">MovieDisplayActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 
 
 </resources>

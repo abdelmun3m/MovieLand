@@ -34,22 +34,27 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
     }
 
 
-    public void convertCursorToMovies(Cursor mCursorData){
+    public List<Movie> convertCursorToMovies(Cursor mCursorData){
         List<Movie> myList = new ArrayList<>();
         while (mCursorData.moveToNext()){
             Movie movie = new Movie();
             movie.Movie_Id = mCursorData.getString(MoviesContract.FavoriteMoviesEntity.INDEX_COLUMN_MOVIE_ID);
             movie.OriginallTitle = mCursorData.getString(MoviesContract.FavoriteMoviesEntity.INDEX_COLUMN_ORIGINAL_TITLE);
             movie.Overview = mCursorData.getString(MoviesContract.FavoriteMoviesEntity.INDEX_COLUMN_OVERVIEW);
-            movie.PosterImage=mCursorData.getString(MoviesContract.FavoriteMoviesEntity.INDEX_COLUMN_POSTER_IMAGE);
+            movie.images.imagePosterUrl=mCursorData.getString(MoviesContract.FavoriteMoviesEntity.INDEX_COLUMN_POSTER_IMAGE);
+            movie.images.imageBackdropsUrl = mCursorData.getString(MoviesContract.FavoriteMoviesEntity.INDEX_COLUMN_BACKDROP);
+            movie.images.imageBackdropsRatio =1.77f;
             movie.RelaseDate = mCursorData.getString(MoviesContract.FavoriteMoviesEntity.INDEX_COLUMN_RELEASE_DATE);
             movie.Vote_Average = mCursorData.getLong(MoviesContract.FavoriteMoviesEntity.INDEX_COLUMN_VOTE_RATE);
+
             if(movie != null){
                 myList.add(movie);
             }
         }
         mCursorData.close();
         UpdateListOfMovies(myList);
+
+        return myList;
     }
 
     public void UpdateListOfMovies(List<Movie> newList){

@@ -3,6 +3,7 @@ package com.abdelmun3m.movie_land.FavoriteMovieIntentTask;
 import android.app.IntentService;
 import android.content.Intent;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.abdelmun3m.movie_land.Movie;
 
