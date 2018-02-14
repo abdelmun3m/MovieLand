@@ -16,7 +16,10 @@ import com.abdelmun3m.movie_land.utilities.DynamicHeightNetworkImageView;
 import com.android.volley.toolbox.NetworkImageView;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -61,6 +64,26 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
         this.MovieList = newList;
         notifyDataSetChanged();
     }
+
+    public void appendListOfRecommendations(List<Movie> newList){
+
+        if(MovieList == null){
+            this.MovieList = newList;
+        }else{
+            this.MovieList.addAll(newList);
+        }
+        Collections.shuffle(this.MovieList);
+        Set<Movie> hs = new HashSet<>();
+        hs.addAll(MovieList);
+        MovieList.clear();
+        MovieList.addAll(hs);
+        notifyDataSetChanged();
+    }
+
+    public List<Movie> getMovieList() {
+        return MovieList;
+    }
+
     @Override
     public MoviesViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         MoviesViewHolder mViewHolder;

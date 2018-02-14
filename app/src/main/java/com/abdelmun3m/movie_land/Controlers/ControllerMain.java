@@ -26,6 +26,7 @@ import com.abdelmun3m.movie_land.utilities.MovieAPI;
 import org.json.JSONException;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -139,30 +140,54 @@ public class ControllerMain {
                     public void onResponse(String response) {
                         try {
                             List<Movie> listOfMovies = MovieAPI.getListOfMovies(response);
-                            mView.updateAdapterData(listOfMovies);
+                            mView.appendMovieRecommendation(listOfMovies);
                         } catch (JSONException e) {
-                            mView.showErrorMsg(context.getString(R.string.json_error));
+                            //mView.showErrorMsg(context.getString(R.string.json_error));
                         }
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                mView.showErrorMsg(context.getString(R.string.network_error));
+                //mView.showErrorMsg(context.getString(R.string.network_error));
             }
         });
         NetworkSingleton.getInstance(context).addToRequestQueue(getMovies,TAG);
     }
 
+    public void getRecommendation(){
+        Cursor favorites = getUserFavoriteMovies();
+        if(favorites.getCount() > 0){
+            int count = 0;
+            while (favorites.moveToNext()){
+                String id =
+                        favorites.getString(MoviesContract.FavoriteMoviesEntity.INDEX_COLUMN_MOVIE_ID);
+                getMovieRecommendation(id);
+                count++;
+                if(count > 5) break;
+            }
+        }else{
+                retrieveMovies(1);
+        }
+
+    }
+
 
 
     public void retrieveFavoriteMovies(Context context){
-        Cursor query = context.getContentResolver()
-                .query(MoviesContract.FavoriteMoviesEntity.FAVORITE_MOVIES_URI,null,null,null,null,null);
+        Cursor query = getUserFavoriteMovies();
         if(query.getCount() > 0){
             mView.updateAdapterData(query);
         }else {
            mView.showErrorMsg(context.getString(R.string.favorit_error));
         }
+
+    }
+
+
+    private Cursor getUserFavoriteMovies(){
+
+        return  context.getContentResolver()
+                .query(MoviesContract.FavoriteMoviesEntity.FAVORITE_MOVIES_URI,null,null,null,null,null);
 
     }
 }

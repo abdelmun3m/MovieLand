@@ -144,7 +144,7 @@ public class ViewMain extends AppCompatActivity
         } else if (id == R.id.recommended) {
             //MovieAPI.Build_Movie_Recommendation("19404");
             //TODO make recommendation logic after adding favorite Movies
-            controller.getMovieRecommendation("19404");
+            controller.getRecommendation();
         }else if(id == R.id.favorite){
             currentCategory = FAVORITE_MOVIES_SELECTION;
             controller.retrieveFavoriteMovies(this);
@@ -177,6 +177,19 @@ public class ViewMain extends AppCompatActivity
         mAdapter.UpdateListOfMovies(movies);
         movieList = movies;
         showRecyclerView();
+    }
+
+
+    public void appendMovieRecommendation(List<Movie> movies){
+
+        if(movies == null) return;
+        if(mAdapter == null){
+            mAdapter = new MoviesAdapter(null);
+        }
+        mAdapter.appendListOfRecommendations(movies);
+        movieList = mAdapter.getMovieList();
+        showRecyclerView();
+
     }
 
     public  void updateAdapterData(Cursor data){

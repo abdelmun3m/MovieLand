@@ -108,6 +108,7 @@ public class MovieAPI {
         return url;
     }
 
+
     public static URL Build_Movie_Recommendation(String movieId){
         Uri uri = Uri.parse(GeneralData.MOVIE_API_URL).buildUpon()
                 .appendPath(MOVIE_PATH)
@@ -147,29 +148,6 @@ public class MovieAPI {
     }
 
     static  String res ="";
-/*
-    public static String get_Response(URL url,Context context){
-        HttpURLConnection connection = null;
-        try {
-            connection = (HttpURLConnection) url.openConnection();
-            InputStream response = connection.getInputStream();
-            Scanner scan= new Scanner(response);
-            scan.useDelimiter("\\A");
-            if(scan.hasNext()){
-                String temp = scan.next();
-
-                return temp;
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally {
-            assert connection != null;
-            connection.disconnect();
-        }
-        return null;
-    }
-*/
 
     public static void getMovies_FUllInfo(Movie m,String response) throws JSONException{
         JSONObject json_result = new JSONObject(response);
@@ -183,8 +161,8 @@ public class MovieAPI {
         m.trailersKeys = trailers;
         m.reviews = reviews;
     }
-    public static List<Movie> getListOfMovies(String Result) throws JSONException{
 
+    public static List<Movie> getListOfMovies(String Result) throws JSONException{
         List<Movie> ListOfMovies = new ArrayList<>();
         JSONObject jsonResult= new JSONObject(Result);
         JSONArray results = jsonResult.getJSONArray(GeneralData.Json_Result);
