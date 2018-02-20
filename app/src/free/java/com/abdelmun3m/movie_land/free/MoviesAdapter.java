@@ -1,4 +1,4 @@
-package com.abdelmun3m.movie_land.MoviewRecyclerView;
+package com.abdelmun3m.movie_land.free;
 
 import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.abdelmun3m.movie_land.Movie;
 import com.abdelmun3m.movie_land.MoviesProvider.MoviesContract;
 import com.abdelmun3m.movie_land.R;
-import com.abdelmun3m.movie_land.Views.ViewMain;
+import com.abdelmun3m.movie_land.free.ViewMain;
 import com.abdelmun3m.movie_land.utilities.DynamicHeightNetworkImageView;
 
 import java.util.ArrayList;

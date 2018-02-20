@@ -7,6 +7,7 @@ public class GeneralData {
 
     public static final String API_KEY = "a26b061467611fb1fc2dabf560a402c6";
     public static String YOUTUP_KEY = "AIzaSyBiQbI9ZId2_iyUjmhaHv-GQBQbTeWkw1Y";
+    public static String ADSID = "ca-app-pub-3444558145434192~3041791422";
     public static final String MOVIE_API_URL  = "https://api.themoviedb.org/3/";
     public static final String GENERAL_MOVIES_URL  = MOVIE_API_URL+"movie/";
     public static final String POPULAR_MOVIES_URL  = GENERAL_MOVIES_URL+"popular";

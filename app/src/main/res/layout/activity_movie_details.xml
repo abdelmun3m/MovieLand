@@ -100,7 +100,9 @@
                                 android:layout_height="wrap_content"
                                 android:layout_alignTop="@+id/tv_md_ReleaseDate"
                                 android:layout_alignParentEnd="true"
-                                android:src="@android:drawable/btn_star_big_on" />
+                                android:src="@android:drawable/btn_star_big_on"
+                                android:contentDescription="@string/make_favorite_Description"
+                                />
 
                         </RelativeLayout>
                     </LinearLayout>

@@ -11,6 +11,7 @@
         android:clickable="false"
         app:srcCompat="@drawable/youtube"
         android:scaleType="centerCrop"
+        android:contentDescription="@string/trailer_icon"
         />
     <TextView
         android:visibility="gone"

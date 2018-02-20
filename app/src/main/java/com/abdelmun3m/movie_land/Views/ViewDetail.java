@@ -92,10 +92,9 @@ public class ViewDetail extends AppCompatActivity implements TrailerRecyclerView
 
         if(CurrentMovie != null){
             originaltitle.setText(CurrentMovie.OriginallTitle);
-
             //ToDo ReDesign ReleaseDate And Vote Average ar remove strings
-            releaseDate.setText("Release "+CurrentMovie.RelaseDate);
-            voteAverage.setText("Rate "+String.valueOf(CurrentMovie.Vote_Average));
+            releaseDate.setText(CurrentMovie.RelaseDate);
+            voteAverage.setText(String.valueOf(CurrentMovie.Vote_Average));
             overView.setText(CurrentMovie.Overview);
             CurrentMovie.Movie_DB_ID = getMovieDbId(CurrentMovie.Movie_Id);
             controler = new ControllerDetail(this);

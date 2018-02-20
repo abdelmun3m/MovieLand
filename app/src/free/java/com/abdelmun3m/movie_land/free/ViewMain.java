@@ -1,33 +1,36 @@
-package com.abdelmun3m.movie_land.Views;
+package com.abdelmun3m.movie_land.free;
 
 import android.database.Cursor;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.Display;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import com.google.android.gms.ads.MobileAds;
+
 
 import com.abdelmun3m.movie_land.BuildConfig;
-import com.abdelmun3m.movie_land.Controlers.ControllerMain;
+import com.abdelmun3m.movie_land.free.ControllerMain;
+import com.abdelmun3m.movie_land.free.MoviesAdapter;
 import com.abdelmun3m.movie_land.Movie;
-import com.abdelmun3m.movie_land.MoviewRecyclerView.MoviesAdapter;
 import com.abdelmun3m.movie_land.R;
 import com.abdelmun3m.movie_land.utilities.DynamicHeightNetworkImageView;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,7 +80,15 @@ public class ViewMain extends AppCompatActivity
         display.getSize(size);
         int width = size.x;
         int height = size.y;
+        MobileAds.initialize(this, "ca-app-pub-3940256099942544~3347511713");
+        AdView mAdView = (AdView)findViewById(R.id.addView);
+            mAdView.setVisibility(View.VISIBLE);
 
+        AdRequest adRequest = new AdRequest.Builder()
+                    .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                    .build();
+
+            mAdView.loadAd(adRequest);
 
 
         if(width < 800){
@@ -279,4 +290,7 @@ public class ViewMain extends AppCompatActivity
             controller.retrieveFavoriteMovies(this);
         }
     }
+
+
+
 }

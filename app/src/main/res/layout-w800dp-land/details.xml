@@ -67,7 +67,9 @@
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:src="@android:drawable/btn_star_big_on" />
+                        android:src="@android:drawable/btn_star_big_on"
+                        android:contentDescription="@string/make_favorite_Description"
+                        />
                 </LinearLayout>
 
             </android.support.v7.widget.Toolbar>

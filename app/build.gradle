@@ -5,7 +5,7 @@ android {
         config {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
-            storeFile file('/home/abdelmun3m/.android/debug.keystore')
+            storeFile file("$rootDir/app/debug.keystore")
             storePassword 'android'
         }
     }
@@ -28,6 +28,32 @@ android {
         debug {
         }
     }
+    sourceSets {
+        main { java.srcDirs = ['src/main/java', 'src/test/java'] }
+        free {
+            java.srcDirs = ['src/free/java', 'src/free/java/']
+            res.srcDirs = ['src/free/res', 'src/free/res/']
+        
+
+            manifest.srcFile
+        'src/free/AndroidManifest.xml'
+}
+    }
+
+    productFlavors {
+        free {
+            dimension "tier"
+            applicationId "com.abdelmun3m.movie_land.free"
+            dependencies {
+
+            }
+
+        }
+        paid {
+            dimension "tier"
+            applicationId "com.abdelmun3m.movie_land.paid"
+        }
+    }
 }
 
 dependencies {
@@ -47,5 +73,7 @@ dependencies {
     compile 'com.android.support:cardview-v7:25.4.0'
     compile 'com.android.support:recyclerview-v7:25.3.1'
     compile project(':volley')
-   // compile files('libs/YouTubeAndroidPlayerApi.jar')
+    compile 'com.google.android.gms:play-services-ads:11.8.0'
+    compile 'com.google.android.gms:play-services-location:11.8.0'
+    // compile files('libs/YouTubeAndroidPlayerApi.jar')
 }

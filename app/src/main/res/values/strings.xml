@@ -76,6 +76,10 @@
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
+    <string name="make_favorite_Description">Make Favorite</string>
+    <string name="movie_poster_description">Movie Poster</string>
+    <string name="user_image">User Image</string>
+    <string name="trailer_icon">Trailer</string>
 
 
 </resources>

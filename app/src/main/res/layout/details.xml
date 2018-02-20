@@ -40,7 +40,7 @@
                 android:id="@+id/details_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?actionBarSize"
-                android:layout_gravity="bottom|left"
+                android:layout_gravity="bottom|start"
                 app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
                 app:layout_collapseMode="pin"
                 app:elevation="16dp">
@@ -64,7 +64,9 @@
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:src="@android:drawable/btn_star_big_on" />
+                        android:src="@android:drawable/btn_star_big_on"
+                        android:contentDescription="@string/make_favorite_Description"
+                        />
                 </LinearLayout>
 
             </android.support.v7.widget.Toolbar>
@@ -89,8 +91,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
+                android:orientation="horizontal"
+                android:background="@color/colorPrimary">
                 <TextView
                     android:id="@+id/tv_md_ReleaseDate"
                     android:layout_width="0dp"
@@ -98,6 +100,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="4dp"
                     android:gravity="center"
+                    android:textColor="@color/cardview_light_background"
                     android:text="@string/release_date"
                     android:textSize="24sp" />
                 <TextView
@@ -106,6 +109,7 @@
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
+                    android:textColor="@color/cardview_light_background"
                     android:text="7.8"
                     android:textSize="24sp" />
             </LinearLayout>

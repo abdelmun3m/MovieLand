@@ -1,4 +1,4 @@
-package com.abdelmun3m.movie_land.Controlers;
+package com.abdelmun3m.movie_land.free;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,16 +11,17 @@ import com.abdelmun3m.movie_land.FavoriteMovieIntentTask.FavoriteMoviesLoader;
 import com.abdelmun3m.movie_land.GeneralData;
 import com.abdelmun3m.movie_land.Movie;
 import com.abdelmun3m.movie_land.MoviesProvider.MoviesContract;
-import com.abdelmun3m.movie_land.Views.ViewDetail;
 import com.abdelmun3m.movie_land.R;
-import com.abdelmun3m.movie_land.Views.ViewMain;
+import com.abdelmun3m.movie_land.Views.ViewDetail;
+import com.abdelmun3m.movie_land.free.ViewMain;
 import com.abdelmun3m.movie_land.utilities.DynamicHeightNetworkImageView;
+import com.abdelmun3m.movie_land.utilities.MovieAPI;
 import com.abdelmun3m.movie_land.utilities.NetworkSingleton;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.abdelmun3m.movie_land.utilities.MovieAPI;
+
 import org.json.JSONException;
 
 import java.net.URL;

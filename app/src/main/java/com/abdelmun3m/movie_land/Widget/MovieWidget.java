@@ -43,7 +43,13 @@ public class MovieWidget extends AppWidgetProvider {
 
         //TODO create services that will get online movie
 
-        views.setImageViewBitmap(R.id.widget_poster_image,img);
+        if(img != null) {
+            views.setImageViewBitmap(R.id.widget_poster_image, img);
+        }
+        /*else{
+
+            views.setTextViewText(R.id.widget_text,"NO Favorite Movies");
+        }*/
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
@@ -74,45 +80,52 @@ public class MovieWidget extends AppWidgetProvider {
                         ,null,null,null,
                         null,null);
 
-        if(favorite.getCount() > 0) {
+        String id = null;
+        if( favorite != null && favorite.getCount() > 0) {
             favorite.moveToFirst();
-            String id =favorite.getString(MoviesContract.FavoriteMoviesEntity.INDEX_COLUMN_MOVIE_ID);
-            URL mUrl= MovieAPI.Build_Movie_Recommendation(id);
-            StringRequest getMovies = new StringRequest(Request.Method.GET, mUrl.toString(),
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            try {
-                                List<Movie> listOfMovies = MovieAPI.getListOfMovies(response);
-                                int index = new Random().nextInt(listOfMovies.size());
-                                MovieWidget.this.currentMovie = listOfMovies.get(index);
-                                NetworkSingleton.getInstance(context)
-                                        .getImageLoader()
-                                        .get(MovieWidget.this.currentMovie.getPosterUrl(),
-                                                new ImageLoader.ImageListener() {
-                                                    @Override
-                                                    public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
-                                                        Bitmap img = response.getBitmap();
-                                                        updateAppWidget(context, appWidgetManager, appWidgetId,img);
-                                                    }
-                                                    @Override
-                                                    public void onErrorResponse(VolleyError error) {
-                                                    }
-                                                });
-
-                            } catch (JSONException e) {
-                                //mView.showErrorMsg(context.getString(R.string.json_error));
-                            }
-                        }
-                    }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    //mView.showErrorMsg(context.getString(R.string.network_error));
-                }
-            });
-            NetworkSingleton.getInstance(context).addToRequestQueue(getMovies,"WIDGET");
-
+            id =favorite.getString(MoviesContract.FavoriteMoviesEntity.INDEX_COLUMN_MOVIE_ID);
+        }else{
+            updateAppWidget(context, appWidgetManager, appWidgetId,null);
+            return null;
         }
+
+        URL mUrl= MovieAPI.Build_Movie_Recommendation(id);
+
+
+        StringRequest getMovies = new StringRequest(Request.Method.GET, mUrl.toString(),
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            List<Movie> listOfMovies = MovieAPI.getListOfMovies(response);
+                            int index = new Random().nextInt(listOfMovies.size());
+                            MovieWidget.this.currentMovie = listOfMovies.get(index);
+                            NetworkSingleton.getInstance(context)
+                                    .getImageLoader()
+                                    .get(MovieWidget.this.currentMovie.getPosterUrl(),
+                                            new ImageLoader.ImageListener() {
+                                                @Override
+                                                public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+                                                    Bitmap img = response.getBitmap();
+                                                    updateAppWidget(context, appWidgetManager, appWidgetId,img);
+                                                }
+                                                @Override
+                                                public void onErrorResponse(VolleyError error) {
+                                                }
+                                            });
+
+                        } catch (JSONException e) {
+                            //mView.showErrorMsg(context.getString(R.string.json_error));
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //mView.showErrorMsg(context.getString(R.string.network_error));
+            }
+        });
+        NetworkSingleton.getInstance(context).addToRequestQueue(getMovies,"WIDGET");
+
         return  null;
     }
 
