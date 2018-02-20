@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center|bottom"
             app:adSize="BANNER"
-            app:adUnitId="ca-app-pub-3444558145434192/8849895143">
+            app:adUnitId="ca-app-pub-3940256099942544/6300978111">
         </com.google.android.gms.ads.AdView>
 
 
