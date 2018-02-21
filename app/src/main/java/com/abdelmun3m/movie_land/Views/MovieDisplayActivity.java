@@ -54,7 +54,7 @@ public class MovieDisplayActivity extends YouTubeFailureRecoveryActivity impleme
         if(i.hasExtra(key)){
             ButterKnife.bind(this);
             videoKey = i.getStringExtra(key);
-            playerView.initialize(GeneralData.YOUTUP_KEY, this);
+            playerView.initialize("AIzaSyBiQbI9ZId2_iyUjmhaHv-GQBQbTeWkw1Y", this);
         }else{
 
             //TODO Show error Message Key

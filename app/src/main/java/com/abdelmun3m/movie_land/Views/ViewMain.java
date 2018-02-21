@@ -26,8 +26,6 @@ import com.abdelmun3m.movie_land.Movie;
 import com.abdelmun3m.movie_land.MoviewRecyclerView.MoviesAdapter;
 import com.abdelmun3m.movie_land.R;
 import com.abdelmun3m.movie_land.utilities.DynamicHeightNetworkImageView;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
 
 import java.util.ArrayList;
 import java.util.List;

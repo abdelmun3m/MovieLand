@@ -5,7 +5,7 @@ import android.util.Log;
 
 public class GeneralData {
 
-    public static final String API_KEY = "";
+    public static final String API_KEY = "a26b061467611fb1fc2dabf560a402c6";
     public static String YOUTUP_KEY = "AIzaSyBiQbI9ZId2_iyUjmhaHv-GQBQbTeWkw1Y";
     public static String ADS_ID = "";
     public static String UNIT_ID="ca-app-pub-3444558145434192/8849895143";
