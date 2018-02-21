@@ -19,12 +19,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.abdelmun3m.movie_land.GeneralData;
 import com.google.android.gms.ads.MobileAds;
 
 
-import com.abdelmun3m.movie_land.BuildConfig;
-import com.abdelmun3m.movie_land.free.ControllerMain;
-import com.abdelmun3m.movie_land.free.MoviesAdapter;
 import com.abdelmun3m.movie_land.Movie;
 import com.abdelmun3m.movie_land.R;
 import com.abdelmun3m.movie_land.utilities.DynamicHeightNetworkImageView;
@@ -80,7 +79,7 @@ public class ViewMain extends AppCompatActivity
         display.getSize(size);
         int width = size.x;
         int height = size.y;
-        MobileAds.initialize(this, "ca-app-pub-3940256099942544~3347511713");
+        MobileAds.initialize(this, GeneralData.ADS_ID);
         AdView mAdView = (AdView)findViewById(R.id.addView);
             mAdView.setVisibility(View.VISIBLE);
 

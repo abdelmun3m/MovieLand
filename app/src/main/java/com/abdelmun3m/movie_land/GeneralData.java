@@ -6,8 +6,9 @@ import android.util.Log;
 public class GeneralData {
 
     public static final String API_KEY = "";
-    public static String YOUTUP_KEY = "";
-    public static String ADSID = "";
+    public static String YOUTUP_KEY = "AIzaSyBiQbI9ZId2_iyUjmhaHv-GQBQbTeWkw1Y";
+    public static String ADS_ID = "";
+    public static String UNIT_ID="ca-app-pub-3444558145434192/8849895143";
     public static final String MOVIE_API_URL  = "https://api.themoviedb.org/3/";
     public static final String GENERAL_MOVIES_URL  = MOVIE_API_URL+"movie/";
     public static final String POPULAR_MOVIES_URL  = GENERAL_MOVIES_URL+"popular";
