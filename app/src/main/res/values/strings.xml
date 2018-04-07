@@ -14,6 +14,12 @@
     </string>
     <string name="error_activity_state">Sorry An Error happened
         while retrieving activity state try to reload you application</string>
+    <string name="no_favorite_message">
+        We Recommend Movies according to your Favorites, we can\'t find any favorite movies, so we recommend You the top rated movies
+    </string>
+    <string name="no_favorite_title">
+        No Favorite
+    </string>
     <!--ERROR MESSAGES-->
 
 

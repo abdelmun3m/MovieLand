@@ -36,7 +36,7 @@ public class MovieAPI {
 
 
 
-    public static URL Build_Movies_Category_URL(int category){
+    public static URL Build_Movies_Category_URL(int category,int page){
         String sort_URI;
         if(category == 1){sort_URI = GeneralData.TOP_RATED_MOVIES_URL;}
         else if(category == 2){sort_URI = GeneralData.POPULAR_MOVIES_URL;}
@@ -44,7 +44,7 @@ public class MovieAPI {
         Uri uri = Uri.parse(sort_URI).buildUpon()
                 .appendQueryParameter(GeneralData.QUERY_API_KEY, GeneralData.API_KEY)
                 .appendQueryParameter(GeneralData.QUERY_LANGUAGE, GeneralData.DEFAULT_LANG)
-                .appendQueryParameter(GeneralData.QUERY_PAGE,GeneralData.PAGE_NUMBER)
+                .appendQueryParameter(GeneralData.QUERY_PAGE,page+"")
                 .build();
 
         URL url = null;
@@ -166,6 +166,7 @@ public class MovieAPI {
         List<Movie> ListOfMovies = new ArrayList<>();
         JSONObject jsonResult= new JSONObject(Result);
         JSONArray results = jsonResult.getJSONArray(GeneralData.Json_Result);
+        GeneralData.TOTAL_PAGES = jsonResult.getInt(GeneralData.Json_TOTAL_PAGES);
         for (int i = 0; i <results.length() ; i++) {
             JSONObject JsonMovie = results.getJSONObject(i);
             Movie temp = new Movie();

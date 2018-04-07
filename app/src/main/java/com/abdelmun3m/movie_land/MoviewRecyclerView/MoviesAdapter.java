@@ -7,11 +7,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.abdelmun3m.movie_land.Movie;
 import com.abdelmun3m.movie_land.MoviesProvider.MoviesContract;
+import com.abdelmun3m.movie_land.Presenters.ViewMainPresenter;
 import com.abdelmun3m.movie_land.R;
-import com.abdelmun3m.movie_land.Views.ViewMain;
 import com.abdelmun3m.movie_land.utilities.DynamicHeightNetworkImageView;
 
 import java.util.ArrayList;
@@ -26,11 +27,12 @@ import butterknife.ButterKnife;
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesViewHolder>{
 
 
-    private List<Movie> MovieList = new ArrayList<>();
+    private List<Movie> movieList = new ArrayList<>();
     private MovieClick movieClick =null;
-    private ViewMain mView ;
-    Cursor mCursor;
-    public MoviesAdapter(ViewMain c){
+    private ViewMainPresenter mView ;
+    private int curentPosition;
+
+    public MoviesAdapter(ViewMainPresenter c){
         this.movieClick = c;
         this.mView = c;
     }
@@ -52,33 +54,43 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
             }
         }
         mCursorData.close();
-        UpdateListOfMovies(myList);
+        UpdateListOfMovies(myList,true);
 
         return myList;
     }
 
-    public void UpdateListOfMovies(List<Movie> newList){
-        this.MovieList = newList;
+    public void UpdateListOfMovies(List<Movie> newList, boolean append){
+        if(movieList == null){
+            this.movieList = newList;
+        }
+
+
+        if(append){
+            this.movieList.addAll(newList);
+        }else{
+            movieList.clear();
+            movieList = newList;
+        }
         notifyDataSetChanged();
     }
 
     public void appendListOfRecommendations(List<Movie> newList){
 
-        if(MovieList == null){
-            this.MovieList = newList;
+        if(movieList == null){
+            this.movieList = newList;
         }else{
-            this.MovieList.addAll(newList);
+            this.movieList.addAll(newList);
         }
-        Collections.shuffle(this.MovieList);
+        Collections.shuffle(this.movieList);
         Set<Movie> hs = new HashSet<>();
-        hs.addAll(MovieList);
-        MovieList.clear();
-        MovieList.addAll(hs);
+        hs.addAll(movieList);
+        movieList.clear();
+        movieList.addAll(hs);
         notifyDataSetChanged();
     }
 
     public List<Movie> getMovieList() {
-        return MovieList;
+        return movieList;
     }
 
     @Override
@@ -92,16 +104,19 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
     //Movie mo = new Movie();
     @Override
     public void onBindViewHolder(MoviesViewHolder holder, int position) {
-        holder.bind(MovieList.get(position));
+        holder.bind(movieList.get(position));
+        curentPosition = position;
+        if(position == movieList.size() - 2){
+           // Toast.makeText(mView.getContext(), position+":"+movieList.size(), Toast.LENGTH_SHORT).show();
+           // mView.loadNextPage();
+        }
       //  holder.bind(mo);
     }
 
     @Override
     public int getItemCount() {
-        return MovieList.size();
+        return movieList.size();
     }
-
-
 
 
     /**
@@ -136,7 +151,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
         }
         @Override
         public void onClick(View v) {
-            if(v.getId() == itemView.getId()) movieClick.onMovieClick(this.currentMovie);
+            if(v.getId() == itemView.getId()) movieClick.onMovieClick(this.currentMovie,(View)moviePoster);
 
         }
     }
@@ -147,6 +162,6 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
      * **/
 
     public interface MovieClick{
-        void onMovieClick(Movie m);
+        void onMovieClick(Movie m, View moviePoster);
     }
 }

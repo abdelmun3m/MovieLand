@@ -6,32 +6,35 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/top_rated"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="@string/drawer_item_top_rated" />
+            android:icon="@drawable/top_rated_32"
+            android:title="@string/drawer_item_top_rated"
+            android:checked="true"
+            />
         <item
             android:id="@+id/popular_movies"
-            android:icon="@drawable/ic_menu_gallery"
+            android:icon="@drawable/popular_32"
             android:title="@string/drawer_item_popular_movies" />
         <item
             android:id="@+id/recommended"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="@string/drawer_item_Recommended" />
+            android:icon="@drawable/recommended_32"
+            android:title="@string/drawer_item_Recommended"/>
+
         <item
             android:id="@+id/favorite"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:icon="@drawable/favorite_32"
             android:title="@string/drawer_item_favorite" />
     </group>
 
-    <item android:title="Communicate">
+    <item android:title="Info">
         <menu>
             <item
                 android:id="@+id/about"
-                android:icon="@drawable/ic_menu_share"
+                android:icon="@drawable/about_32"
                 android:title="@string/drawer_item_About" />
-            <item
-                android:id="@+id/settings"
-                android:icon="@drawable/ic_menu_send"
-                android:title="@string/drawer_item_Settings" />
+            <!--<item-->
+                <!--android:id="@+id/settings"-->
+                <!--android:icon="@drawable/ic_menu_send"-->
+                <!--android:title="@string/drawer_item_Settings" />-->
         </menu>
     </item>
 

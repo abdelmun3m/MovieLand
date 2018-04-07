@@ -4,13 +4,16 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.transition.ChangeBounds;
 import android.view.View;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -35,12 +38,9 @@ import butterknife.ButterKnife;
 
 public class ViewDetail extends AppCompatActivity implements TrailerRecyclerView.trailerClicke ,
         ReviewAdapter.reviewClick{
-
-
     private static final int LOADER_ID = 101 ;
     private Movie CurrentMovie = null;
     private ControllerDetail controler;
-
     @BindView(R.id.tv_md_Originaltitle)
             TextView originaltitle;
     @BindView(R.id.tv_md_overview)
@@ -75,6 +75,11 @@ public class ViewDetail extends AppCompatActivity implements TrailerRecyclerView
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setEnterTransition(new ChangeBounds().setDuration(2000));
+        }
+
         setContentView(R.layout.details);
         ButterKnife.bind(this);
 
@@ -115,9 +120,7 @@ public class ViewDetail extends AppCompatActivity implements TrailerRecyclerView
                 CurrentMovie.favorite = 0;
             }
 
-
             loadPosterImage();
-
 
          star.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -126,7 +129,7 @@ public class ViewDetail extends AppCompatActivity implements TrailerRecyclerView
                         setFavoritMovie(true);
                         CurrentMovie.favorite = 1;
                         controler.IntentInsertNewMovie(CurrentMovie);
-                    }else {
+                    }else{
                         setFavoritMovie(false);
                         CurrentMovie.favorite = 0;
                       controler.IntentDeleteFavoriteMovie(CurrentMovie.Movie_Id);
@@ -183,8 +186,8 @@ public class ViewDetail extends AppCompatActivity implements TrailerRecyclerView
         mTreilerRecyclerView.setAdapter(adapter);
         GridLayoutManager  manager =new GridLayoutManager(
                 this,
-                2,
-                LinearLayoutManager.VERTICAL,
+                1,
+                LinearLayoutManager.HORIZONTAL,
                 false);
         mTreilerRecyclerView.setLayoutManager(manager);
         mTreilerRecyclerView.setHasFixedSize(true);

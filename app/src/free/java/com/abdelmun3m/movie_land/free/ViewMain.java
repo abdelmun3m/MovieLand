@@ -1,5 +1,6 @@
 package com.abdelmun3m.movie_land.free;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Point;
 import android.os.Bundle;
@@ -19,8 +20,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.abdelmun3m.movie_land.Controlers.ControllerMain;
 import com.abdelmun3m.movie_land.GeneralData;
+import com.abdelmun3m.movie_land.MoviewRecyclerView.MoviesAdapter;
 import com.google.android.gms.ads.MobileAds;
 
 
@@ -37,8 +41,12 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.abdelmun3m.movie_land.GeneralData.CURRENT_PAGE;
+import static com.abdelmun3m.movie_land.Views.ViewMain.LAST_CATEGORY;
+
 public class ViewMain extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, MoviesAdapter.MovieClick {
+        implements NavigationView.OnNavigationItemSelectedListener,
+        com.abdelmun3m.movie_land.Presenters.ViewMainPresenter {
 
 
 
@@ -48,6 +56,7 @@ public class ViewMain extends AppCompatActivity
     private static final int TOP_RATED_LIST_SELECTION = 1;
     private static final int FAVORITE_MOVIES_SELECTION = 3;
     private int currentCategory = TOP_RATED_LIST_SELECTION;
+
     //----------------------------------------
 
     private ControllerMain controller;
@@ -86,36 +95,39 @@ public class ViewMain extends AppCompatActivity
         AdRequest adRequest = new AdRequest.Builder()
                     .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
                     .build();
-
-            mAdView.loadAd(adRequest);
+        mAdView.loadAd(adRequest);
 
 
         if(width < 800){
+            //display menue selection beside actitvity title to display drawable
             dualMode = false;
             DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
             ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                     this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
             drawer.addDrawerListener(toggle);
             toggle.syncState();
-        }
 
+
+        }
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
         //------------------------------------------------------------------------
         controller = new ControllerMain(this);
         if(savedInstanceState == null) {
             setLayoutManager();
-            controller.retrieveMovies(currentCategory);
+            controller.retrieveMovies(currentCategory,GeneralData.DEFAULT_PAGE_NUMBER,false);
         }
     }
 
     public void setDataloaded(Boolean loaded){
         this.dataloaded = loaded;
     }
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
+        if (!dualMode && drawer.isDrawerOpen(GravityCompat.START) ) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
@@ -152,10 +164,10 @@ public class ViewMain extends AppCompatActivity
         if (id == R.id.top_rated) {
             // Handle the camera action
             currentCategory = TOP_RATED_LIST_SELECTION;
-            controller.retrieveMovies(currentCategory);
+            controller.retrieveMovies(currentCategory, GeneralData.DEFAULT_PAGE_NUMBER,false);
         } else if (id == R.id.popular_movies) {
             currentCategory = POPULAR_LIST_SELECTION;
-            controller.retrieveMovies(currentCategory);
+            controller.retrieveMovies(currentCategory,GeneralData.DEFAULT_PAGE_NUMBER,false);
         } else if (id == R.id.recommended) {
             controller.getRecommendation();
         }else if(id == R.id.favorite){
@@ -163,10 +175,12 @@ public class ViewMain extends AppCompatActivity
             controller.retrieveFavoriteMovies(this);
         }else if (id == R.id.about) {
 
-        } else if (id == R.id.settings) {
-
         }
+
+        mRecyclerView.scrollToPosition(0);
+
         if(!dualMode){
+            //close navigation after selection
             DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
             drawer.closeDrawer(GravityCompat.START);
         }
@@ -179,17 +193,14 @@ public class ViewMain extends AppCompatActivity
      * @input index represent index of item in the list
      * @output void
      * */
-    public void changeSelectedListItem(int index){
-        //findViewById(R.id.popular_movies).setBackgroundColor(Color.GRAY);
-    }
+    public void updateAdapterData(List<Movie> movies,boolean append){
 
-    public void updateAdapterData(List<Movie> movies){
-        if(mAdapter == null){
-            mAdapter = new MoviesAdapter(null);
-        }
-        mAdapter.UpdateListOfMovies(movies);
-        movieList = movies;
-        showRecyclerView();
+            if(mAdapter == null){
+                mAdapter = new MoviesAdapter(null);
+            }
+            mAdapter.UpdateListOfMovies(movies,append);
+            loading=false;
+            showRecyclerView();
     }
 
 
@@ -205,18 +216,34 @@ public class ViewMain extends AppCompatActivity
 
     }
 
-    public  void updateAdapterData(Cursor data){
-
-        if(mAdapter == null){
-            mAdapter = new MoviesAdapter(null);
-        }
-        movieList = mAdapter.convertCursorToMovies(data);
-    }
-
     public void showErrorMsg(String msg){
         mRecyclerView.setVisibility(View.GONE);
         mErrorMessageField.setVisibility(View.VISIBLE);
         mErrorMessageField.setText(msg);
+    }
+
+    @Override
+    public Context getContext() {
+        return this;
+    }
+
+    @Override
+    public AppCompatActivity getActivity() {
+        return this;
+    }
+
+    @Override
+    public void loadNextPage() {
+       // Toast.makeText(this, ""+GeneralData.TOTAL_PAGES, Toast.LENGTH_SHORT).show();
+        if(CURRENT_PAGE < GeneralData.TOTAL_PAGES){
+            loading = true;
+            CURRENT_PAGE++;
+            controller.retrieveMovies(currentCategory,CURRENT_PAGE,true);
+        }else {
+            Toast.makeText(this, "No More Movies ", Toast.LENGTH_SHORT).show();
+            loading = true;
+        }
+
     }
 
     public void showRecyclerView(){
@@ -224,56 +251,81 @@ public class ViewMain extends AppCompatActivity
         mRecyclerView.setVisibility(View.VISIBLE);
         mErrorMessageField.setVisibility(View.GONE);
     }
-    private void setLayoutManager(){
+    boolean loading = false;
+    public void setLayoutManager(){
         int vertical = LinearLayoutManager.VERTICAL;
-        int spanCount =  (dualMode) ? 1 : 2;
+        int spanCount =  (dualMode) ? 2 : 2;
+
         manager =new GridLayoutManager(this, spanCount, vertical,false);
         mRecyclerView.setLayoutManager(manager);
         mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if(dy > 0) //check for scroll down
+                {
+                   int  visibleItemCount = manager.getChildCount();
+                    int totalItemCount = manager.getItemCount();
+                    int pastVisiblesItems = manager.findFirstVisibleItemPosition();
+                        if(!loading){
+                            if ( (visibleItemCount + pastVisiblesItems) >= totalItemCount)
+                            {
+                                Toast.makeText(ViewMain.this,  "loading ..", Toast.LENGTH_SHORT).show();
+                                loadNextPage();
+                                //Do pagination.. i.e. fetch new data
+
+                            }
+                        }
+                    
+                }
+            }
+        });
         mAdapter = new MoviesAdapter(this);
         mRecyclerView.setAdapter(mAdapter);
     }
 
-    @Override
-    public void onMovieClick(Movie m) {
-        controller.movieClicked(m);
-    }
-
     public synchronized void loadPoster(Movie m, DynamicHeightNetworkImageView moviePoster, ProgressBar loader) {
             //controller.setMovieImages(m,moviePoster,loader);
-        if(!dualMode){
-            controller.loadImage(loader,m,moviePoster,dualMode);
-        }else{
-            controller.setMovieImages(m,moviePoster,loader,dualMode);
-        }
+       // if(!dualMode){
+            controller.loadImage(loader,m,moviePoster,false);
+        //}
+//        else{
+//            controller.setMovieImages(m,moviePoster,loader,dualMode);
+//        }
 
     }
-
-
-
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(getString(R.string.vm_load_key),dataloaded);
+      //  outState.putInt("currentListPosition",mAdapter.getCurrentPosition());
+        //outState.putInt(LAST_CATEGORY,currentCategory);
         if(dataloaded){
             mListState = manager.onSaveInstanceState();
             outState.putParcelableArrayList(getString(R.string.vm_list_key),
-                    (ArrayList<? extends Parcelable>) movieList);
+                    (ArrayList<? extends Parcelable>) mAdapter.getMovieList());
             outState.putParcelable(getString(R.string.vm_list_state_key), mListState);
         }
     }
-
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         if (savedInstanceState != null) {
             dataloaded = savedInstanceState.getBoolean(getString(R.string.vm_load_key));
+          //  currentCategory=savedInstanceState.getInt(LAST_CATEGORY);
+           // mRecyclerView.scrollToPosition(savedInstanceState.getInt("currentListPosition"));
             if(dataloaded){
                 mListState = savedInstanceState.getParcelable(getString(R.string.vm_list_state_key));
                 movieList = savedInstanceState
                         .getParcelableArrayList(getString(R.string.vm_list_key));
                 setLayoutManager();
-                mAdapter.UpdateListOfMovies(movieList);
+                mAdapter.UpdateListOfMovies(movieList,false);
             }else {
                 showErrorMsg(getString(R.string.error_activity_state));
             }
@@ -289,7 +341,9 @@ public class ViewMain extends AppCompatActivity
             controller.retrieveFavoriteMovies(this);
         }
     }
-
-
+    @Override
+    public void onMovieClick(Movie m, View moviePoster) {
+        controller.movieClicked(m,moviePoster);
+    }
 
 }

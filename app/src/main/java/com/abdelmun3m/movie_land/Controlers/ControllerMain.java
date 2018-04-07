@@ -3,19 +3,26 @@ package com.abdelmun3m.movie_land.Controlers;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.Loader;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.abdelmun3m.movie_land.FavoriteMovieIntentTask.FavoriteMoviesLoader;
 import com.abdelmun3m.movie_land.GeneralData;
 import com.abdelmun3m.movie_land.Movie;
 import com.abdelmun3m.movie_land.MoviesProvider.MoviesContract;
+import com.abdelmun3m.movie_land.Presenters.ViewMainPresenter;
 import com.abdelmun3m.movie_land.Views.ViewDetail;
 import com.abdelmun3m.movie_land.R;
 import com.abdelmun3m.movie_land.Views.ViewMain;
+
 import com.abdelmun3m.movie_land.utilities.DynamicHeightNetworkImageView;
 import com.abdelmun3m.movie_land.utilities.NetworkSingleton;
+import com.abdelmun3m.movie_land.utilities.Utils;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -37,19 +44,20 @@ import java.util.List;
 public class ControllerMain {
 
     public static final String TAG = ControllerMain.class.getSimpleName();
-    private ViewMain mView;
+    private ViewMainPresenter mView;
     private Context context;
+
+
     public ControllerMain(){
     }
 
-    public ControllerMain(ViewMain mView){
+    public ControllerMain(ViewMainPresenter mView){
         this.mView = mView;
-        this.context = mView;
+        this.context = mView.getContext();
     }
 
-
-    public void retrieveMovies(int category){
-        URL mUrl= MovieAPI.Build_Movies_Category_URL(category);
+    public void retrieveMovies(int category, int page, final Boolean append){
+        URL mUrl= MovieAPI.Build_Movies_Category_URL(category,page);
         StringRequest getMovies = new StringRequest(Request.Method.GET, mUrl.toString(),
                 new Response.Listener<String>() {
                     @Override
@@ -57,7 +65,7 @@ public class ControllerMain {
                         try {
                             List<Movie> listOfMovies = MovieAPI.getListOfMovies(response);
                             mView.setDataloaded(true);
-                            mView.updateAdapterData(listOfMovies);
+                            mView.updateAdapterData(listOfMovies,append);
                         } catch (JSONException e) {
                             mView.showErrorMsg(context.getString(R.string.json_error)+" "+e.getMessage());
                             mView.setDataloaded(false);
@@ -120,13 +128,14 @@ public class ControllerMain {
         }
     }
 
-
-    public void movieClicked(Movie m){
+    public void movieClicked(Movie m,View moviePoster){
         //start details activity ;
         if(m != null){
             Intent in = new Intent(context,ViewDetail.class);
             in.putExtra(GeneralData.INTENT_TAG,m);
-            context.startActivity(in);
+            ActivityOptionsCompat options = ActivityOptionsCompat
+                    .makeSceneTransitionAnimation(mView.getActivity(),moviePoster,"poster");
+            context.startActivity(in,options.toBundle());
         }
     }
 
@@ -153,7 +162,7 @@ public class ControllerMain {
     }
 
     public void getRecommendation(){
-      mView.getSupportLoaderManager().restartLoader(FavoriteMoviesLoader.loaderID, null,
+      mView.getActivity().getSupportLoaderManager().restartLoader(FavoriteMoviesLoader.loaderID, null,
               new FavoriteMoviesLoader(context) {
                   @Override
           public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
@@ -168,7 +177,10 @@ public class ControllerMain {
                   }
               }else{
                   //retrieve rated movies in case no favorite movies;
-                  retrieveMovies(1);
+                  Utils.showAlert(context,context.getString(R.string.no_favorite_title),
+                          context.getString(R.string.no_favorite_message));
+                  Toast.makeText(mView.getContext(), "show top", Toast.LENGTH_SHORT).show();
+                  retrieveMovies(ViewMain.TOP_RATED_LIST_SELECTION,GeneralData.DEFAULT_PAGE_NUMBER,false);
               }
           }
 
@@ -179,10 +191,8 @@ public class ControllerMain {
       });
     }
 
-
-
     public void retrieveFavoriteMovies(final Context context){
-        mView.getSupportLoaderManager().restartLoader(FavoriteMoviesLoader.loaderID, null,
+        mView.getActivity().getSupportLoaderManager().restartLoader(FavoriteMoviesLoader.loaderID, null,
                 new FavoriteMoviesLoader(context) {
                     @Override
             public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
@@ -198,13 +208,12 @@ public class ControllerMain {
                         movie.images.imageBackdropsRatio =1.77f;
                         movie.RelaseDate = data.getString(MoviesContract.FavoriteMoviesEntity.INDEX_COLUMN_RELEASE_DATE);
                         movie.Vote_Average = data.getLong(MoviesContract.FavoriteMoviesEntity.INDEX_COLUMN_VOTE_RATE);
-
                         if(movie != null){
                             myList.add(movie);
                         }
                     }
                     data.close();
-                    mView.updateAdapterData(myList);
+                    mView.updateAdapterData(myList,false);
                 }else{
 
                     mView.showErrorMsg(context.getString(R.string.favorit_error));

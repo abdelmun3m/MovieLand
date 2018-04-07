@@ -18,7 +18,10 @@ public class GeneralData {
     public static final String QUERY_LANGUAGE = "language";
     public static final String DEFAULT_LANG   = "en-US";
     public static final String QUERY_PAGE  = "page";
-    public static String PAGE_NUMBER = "1,2";
+    public static final String Json_TOTAL_PAGES  = "total_pages";
+    public static int TOTAL_PAGES  = 1;
+    public static int DEFAULT_PAGE_NUMBER = 1;
+    public static  int CURRENT_PAGE =1;
     public static String w185 = "w185/";
     public static String w500 = "w500/";
     public static String w780 = "w780/";

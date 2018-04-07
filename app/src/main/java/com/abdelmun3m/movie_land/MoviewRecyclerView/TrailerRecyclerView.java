@@ -1,10 +1,12 @@
 package com.abdelmun3m.movie_land.MoviewRecyclerView;
 
+import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import com.abdelmun3m.movie_land.utilities.FontManger;
 
 import com.abdelmun3m.movie_land.R;
 
@@ -22,9 +24,11 @@ public class TrailerRecyclerView extends RecyclerView.Adapter<TrailerRecyclerVie
 
     private String[] listOfUrl ;
     private trailerClicke myTrailerClicke;
+    Typeface icon ;
 
     public TrailerRecyclerView(trailerClicke trailerClickeObject){
         myTrailerClicke= trailerClickeObject;
+
     }
 
     public void updateTrailers(String[] newList) {
@@ -38,6 +42,8 @@ public class TrailerRecyclerView extends RecyclerView.Adapter<TrailerRecyclerVie
         TrailerViewHolder holder ;
         View viewHolder = LayoutInflater.from(parent.getContext()).inflate(R.layout.trailer_list_item,parent,false);
         holder = new TrailerViewHolder(viewHolder);
+
+
         return holder;
     }
 
@@ -59,16 +65,19 @@ public class TrailerRecyclerView extends RecyclerView.Adapter<TrailerRecyclerVie
 
     public class TrailerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        @BindView(R.id.tv_trailer_ID)
-            TextView trailerId ;
         public TrailerViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+//            ButterKnife.bind(this,itemView);
             itemView.setOnClickListener(this);
+
+
         }
 
         public void bind(int id , String movieKey){
+
+
             itemView.setTag(movieKey);
+            //icon = Typeface.createFromAsset(itemView.getContext().getAssets(),"fonts/ionicons.ttf");
         }
 
         @Override

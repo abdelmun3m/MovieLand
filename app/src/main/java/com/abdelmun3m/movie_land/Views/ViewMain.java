@@ -1,5 +1,6 @@
 package com.abdelmun3m.movie_land.Views;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Point;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.os.Parcelable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -19,11 +21,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.abdelmun3m.movie_land.BuildConfig;
 import com.abdelmun3m.movie_land.Controlers.ControllerMain;
+import com.abdelmun3m.movie_land.GeneralData;
 import com.abdelmun3m.movie_land.Movie;
 import com.abdelmun3m.movie_land.MoviewRecyclerView.MoviesAdapter;
+import com.abdelmun3m.movie_land.Presenters.ViewMainPresenter;
 import com.abdelmun3m.movie_land.R;
 import com.abdelmun3m.movie_land.utilities.DynamicHeightNetworkImageView;
 
@@ -34,16 +38,17 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class ViewMain extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, MoviesAdapter.MovieClick {
+        implements NavigationView.OnNavigationItemSelectedListener, ViewMainPresenter {
 
 
 
 
     //--------------------------------------
-    private static final int POPULAR_LIST_SELECTION = 2;
-    private static final int TOP_RATED_LIST_SELECTION = 1;
-    private static final int FAVORITE_MOVIES_SELECTION = 3;
-    private int currentCategory = TOP_RATED_LIST_SELECTION;
+    public static final int POPULAR_LIST_SELECTION = 2;
+    public static final int TOP_RATED_LIST_SELECTION = 1;
+    public static final int FAVORITE_MOVIES_SELECTION = 3;
+    public static final String LAST_CATEGORY = "lastCategory";
+    public int currentCategory = TOP_RATED_LIST_SELECTION;
     //----------------------------------------
 
     private ControllerMain controller;
@@ -52,8 +57,6 @@ public class ViewMain extends AppCompatActivity
     RecyclerView mRecyclerView ;
     @BindView(R.id.tv_ErrorMessage)
     TextView mErrorMessageField;
-
-
     GridLayoutManager manager;
     private Parcelable mListState;
     private boolean dataloaded = false;
@@ -93,13 +96,15 @@ public class ViewMain extends AppCompatActivity
         controller = new ControllerMain(this);
         if(savedInstanceState == null) {
             setLayoutManager();
-            controller.retrieveMovies(currentCategory);
+            controller.retrieveMovies(currentCategory, GeneralData.DEFAULT_PAGE_NUMBER,false);
         }
     }
 
     public void setDataloaded(Boolean loaded){
         this.dataloaded = loaded;
     }
+
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -132,7 +137,6 @@ public class ViewMain extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
@@ -140,10 +144,10 @@ public class ViewMain extends AppCompatActivity
         if (id == R.id.top_rated) {
             // Handle the camera action
             currentCategory = TOP_RATED_LIST_SELECTION;
-            controller.retrieveMovies(currentCategory);
+            controller.retrieveMovies(currentCategory,GeneralData.CURRENT_PAGE,false);
         } else if (id == R.id.popular_movies) {
             currentCategory = POPULAR_LIST_SELECTION;
-            controller.retrieveMovies(currentCategory);
+            controller.retrieveMovies(currentCategory,GeneralData.CURRENT_PAGE,false);
         } else if (id == R.id.recommended) {
             controller.getRecommendation();
         }else if(id == R.id.favorite){
@@ -151,9 +155,10 @@ public class ViewMain extends AppCompatActivity
             controller.retrieveFavoriteMovies(this);
         }else if (id == R.id.about) {
 
-        } else if (id == R.id.settings) {
-
         }
+//        else if (id == R.id.settings) {
+//
+//        }
         if(!dualMode){
             DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
             drawer.closeDrawer(GravityCompat.START);
@@ -171,11 +176,11 @@ public class ViewMain extends AppCompatActivity
         //findViewById(R.id.popular_movies).setBackgroundColor(Color.GRAY);
     }
 
-    public void updateAdapterData(List<Movie> movies){
+    public void updateAdapterData(List<Movie> movies,boolean append){
         if(mAdapter == null){
             mAdapter = new MoviesAdapter(null);
         }
-        mAdapter.UpdateListOfMovies(movies);
+        mAdapter.UpdateListOfMovies(movies,append);
         movieList = movies;
         showRecyclerView();
     }
@@ -193,13 +198,6 @@ public class ViewMain extends AppCompatActivity
 
     }
 
-    public  void updateAdapterData(Cursor data){
-
-        if(mAdapter == null){
-            mAdapter = new MoviesAdapter(null);
-        }
-        movieList = mAdapter.convertCursorToMovies(data);
-    }
 
     public void showErrorMsg(String msg){
         mRecyclerView.setVisibility(View.GONE);
@@ -207,12 +205,28 @@ public class ViewMain extends AppCompatActivity
         mErrorMessageField.setText(msg);
     }
 
+    @Override
+    public Context getContext() {
+        return this;
+    }
+
+    @Override
+    public AppCompatActivity getActivity() {
+        return this;
+    }
+
+    @Override
+    public void loadNextPage() {
+        GeneralData.CURRENT_PAGE++;
+        controller.retrieveMovies(currentCategory,GeneralData.CURRENT_PAGE,true);
+    }
+
     public void showRecyclerView(){
 
         mRecyclerView.setVisibility(View.VISIBLE);
         mErrorMessageField.setVisibility(View.GONE);
     }
-    private void setLayoutManager(){
+    public void setLayoutManager(){
         int vertical = LinearLayoutManager.VERTICAL;
         int spanCount =  (dualMode) ? 1 : 2;
         manager =new GridLayoutManager(this, spanCount, vertical,false);
@@ -223,8 +237,8 @@ public class ViewMain extends AppCompatActivity
     }
 
     @Override
-    public void onMovieClick(Movie m) {
-        controller.movieClicked(m);
+    public void onMovieClick(Movie m, View moviePoster) {
+        controller.movieClicked(m,moviePoster);
     }
 
     public synchronized void loadPoster(Movie m, DynamicHeightNetworkImageView moviePoster, ProgressBar loader) {
@@ -237,12 +251,11 @@ public class ViewMain extends AppCompatActivity
 
     }
 
-
-
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(getString(R.string.vm_load_key),dataloaded);
+        outState.putInt(LAST_CATEGORY,currentCategory);
         if(dataloaded){
             mListState = manager.onSaveInstanceState();
             outState.putParcelableArrayList(getString(R.string.vm_list_key),
@@ -256,12 +269,13 @@ public class ViewMain extends AppCompatActivity
         super.onRestoreInstanceState(savedInstanceState);
         if (savedInstanceState != null) {
             dataloaded = savedInstanceState.getBoolean(getString(R.string.vm_load_key));
+            currentCategory=savedInstanceState.getInt(LAST_CATEGORY);
             if(dataloaded){
                 mListState = savedInstanceState.getParcelable(getString(R.string.vm_list_state_key));
                 movieList = savedInstanceState
                         .getParcelableArrayList(getString(R.string.vm_list_key));
                 setLayoutManager();
-                mAdapter.UpdateListOfMovies(movieList);
+                mAdapter.UpdateListOfMovies(movieList,false);
             }else {
                 showErrorMsg(getString(R.string.error_activity_state));
             }
