@@ -1,5 +1,6 @@
 package com.abdelmun3m.movie_land.Views;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -14,6 +15,8 @@ import android.support.v7.widget.RecyclerView;
 import android.transition.ChangeBounds;
 import android.view.View;
 import android.view.Window;
+import android.view.animation.Animation;
+import android.view.animation.Transformation;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -32,6 +35,11 @@ import com.abdelmun3m.movie_land.utilities.NetworkSingleton;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -63,6 +71,10 @@ public class ViewDetail extends AppCompatActivity implements TrailerRecyclerView
             ProgressBar loader;
     @BindView(R.id.detailAppBar)
             AppBarLayout appBar;
+    @BindView(R.id.btn_back)
+            ImageView btnBack;
+    @BindView(R.id.rate_progress)
+            ProgressBar rateProgress;
     TrailerRecyclerView adapter;
     ReviewAdapter rAdapter;
 
@@ -83,7 +95,6 @@ public class ViewDetail extends AppCompatActivity implements TrailerRecyclerView
         setContentView(R.layout.details);
         ButterKnife.bind(this);
 
-
         if(savedInstanceState == null){
             appBar.setExpanded(true);
             Intent in = getIntent();
@@ -95,11 +106,34 @@ public class ViewDetail extends AppCompatActivity implements TrailerRecyclerView
             CurrentMovie = savedInstanceState.getParcelable(getString(R.string.vd_currentMovie_key));
         }
 
+        appBar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                    //Toast.makeText(ViewDetail.this, ""+verticalOffset, Toast.LENGTH_SHORT).show();
+                if (Math.abs(verticalOffset) >= appBarLayout.getTotalScrollRange()) {
+                    originaltitle.setVisibility(View.VISIBLE);
+                    btnBack.setVisibility(View.VISIBLE);
+                } else {
+                    originaltitle.setVisibility(View.INVISIBLE);
+                    btnBack.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
+
+
         if(CurrentMovie != null){
             originaltitle.setText(CurrentMovie.OriginallTitle);
             //ToDo ReDesign ReleaseDate And Vote Average ar remove strings
-            releaseDate.setText(CurrentMovie.RelaseDate);
+
+            releaseDate.setText(getReadableFormat(CurrentMovie.RelaseDate));
             voteAverage.setText(String.valueOf(CurrentMovie.Vote_Average));
+            //rateProgress.setIndeterminate(false);
+
+            ProgressBarAnimation anim = new ProgressBarAnimation(rateProgress, 0, CurrentMovie.Vote_Average);
+            anim.setDuration(2000);
+            rateProgress.startAnimation(anim);
+
+            //rateProgress.setProgress((int) CurrentMovie.Vote_Average);
             overView.setText(CurrentMovie.Overview);
             CurrentMovie.Movie_DB_ID = getMovieDbId(CurrentMovie.Movie_Id);
             controler = new ControllerDetail(this);
@@ -137,8 +171,29 @@ public class ViewDetail extends AppCompatActivity implements TrailerRecyclerView
                 }
             });
 
+         btnBack.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View v) {
+                    ViewDetail.super.onBackPressed();
+             }
+         });
+
         }
 }
+
+    private String getReadableFormat(String relaseDate) {
+
+
+        DateFormat old = new SimpleDateFormat("yyyy-mm-dd");
+        Date date = new Date();
+        try {
+            date = old.parse(relaseDate);
+            DateFormat newFormat = new SimpleDateFormat("MMM d, yyyy");
+            return newFormat.format(date);
+        } catch (ParseException e) {
+            return relaseDate;
+        }
+    }
 
     public void initializeReviews() {
         mReviewRecyclerView = (RecyclerView) findViewById(R.id.rv_reviews);
@@ -258,4 +313,26 @@ public class ViewDetail extends AppCompatActivity implements TrailerRecyclerView
         super.onSaveInstanceState(outState);
         outState.putParcelable(getString(R.string.vd_currentMovie_key),CurrentMovie);
     }
+}
+
+class ProgressBarAnimation extends Animation {
+    private ProgressBar progressBar;
+    private float from;
+    private float  to;
+
+    public ProgressBarAnimation(ProgressBar progressBar, float from, float to) {
+        super();
+        this.progressBar = progressBar;
+        this.from = from;
+        this.to = to;
+    }
+
+    @Override
+    protected void applyTransformation(float interpolatedTime, Transformation t) {
+        super.applyTransformation(interpolatedTime, t);
+        float value = from + (to - from) * interpolatedTime;
+        //from++;
+        progressBar.setProgress((int) value);
+    }
+
 }

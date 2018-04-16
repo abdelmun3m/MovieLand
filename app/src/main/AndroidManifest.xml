@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.abdelmun3m.movie_land"
-    >
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.abdelmun3m.movie_land">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -14,7 +14,12 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".Views.ViewDetail"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar" >
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.abdelmun3m.movie_land.Views.ViewMain" />
+        </activity>
 
         <provider
             android:name=".MoviesProvider.MoviesContentProvider"

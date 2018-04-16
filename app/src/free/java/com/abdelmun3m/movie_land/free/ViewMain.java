@@ -83,6 +83,7 @@ public class ViewMain extends AppCompatActivity
         setSupportActionBar(toolbar);
 
 
+
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
@@ -153,8 +154,11 @@ public class ViewMain extends AppCompatActivity
             return true;
         }
 
+
+
         return super.onOptionsItemSelected(item);
     }
+
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override

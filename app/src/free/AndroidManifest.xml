@@ -21,7 +21,13 @@
 
         <activity
             android:name="com.abdelmun3m.movie_land.Views.ViewDetail"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar" >
+
+            <meta-data
+                tools:replace="android:value"
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.abdelmun3m.movie_land.free.ViewMain" />
+        </activity>
 
         <provider
             android:name="com.abdelmun3m.movie_land.MoviesProvider.MoviesContentProvider"
